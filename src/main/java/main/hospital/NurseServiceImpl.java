@@ -37,4 +37,8 @@ public class NurseServiceImpl {
 		System.err.println("Incorrect login.");
 		return false;
 	}
+	
+    public List<Nurse> getNursesInformation() {
+        return nurses;
+    }
 }
