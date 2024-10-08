@@ -13,6 +13,11 @@ public class Nurse {
 		this.password = password;
 	}
 	
+	// This constructor is needed for the deserialization (convert the JSON to a Java Object).
+	public Nurse() {
+	    
+	}
+	
 	public Nurse (String username, String password) {
 		this.username = username;
 		this.password = password;
