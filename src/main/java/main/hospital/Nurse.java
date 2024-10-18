@@ -11,13 +11,14 @@ public class Nurse {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Integer id;
 	private String name;
-	private String username;
+	private String user;
 	private String password;
 
 	// Constructor.
-	public Nurse(String name, String username, String password) {
+	public Nurse(Integer id, String name, String user, String password) {
+		this.id = id;
 		this.name = name;
-		this.username = username;
+		this.user = user;
 		this.password = password;
 	}
 	
@@ -26,30 +27,38 @@ public class Nurse {
 	    
 	}
 	
-	public Nurse (String username, String password) {
-		this.username = username;
+	public Nurse (String user, String password) {
+		this.user = user;
 		this.password = password;
 	}
 	
 	// Getters and setters.
+	public Integer getId() {
+		return id;
+	}
+	
 	public String getName() {
 		return name;
 	}
 
-	public String getUsername() {
-		return username;
+	public String getUser() {
+		return user;
 	}
 
 	public String getPassword() {
 		return password;
 	}
 	
+	public void setId(Integer id) {
+		this.id = id;
+	}
+	
 	public void setName(String name) {
 		this.name = name;
 	}
 	
-	public void setUsername(String username) {
-		this.username = username;
+	public void setUser(String user) {
+		this.user = user;
 	}
 
 	public void setPassword(String password) {
