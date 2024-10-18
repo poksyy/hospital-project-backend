@@ -1,47 +1,67 @@
 package main.hospital;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
 
 @Service
 public class NurseServiceImpl implements NurseService {
 
-    @Autowired
-    private NurseRepository nurseRepository; 
-    
-	private List<Nurse> nurses = new ArrayList<>();
+	 private SessionFactory sessionFactory;
+   
+   @Autowired
+   private NurseRepository nurseRepository; 
 
-	public boolean LoginAuthentication(String user, String password) {
+    public NurseServiceImpl(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
-		// Loop to iterate the List 'nurses'.
-		for (int i = 0; i < nurses.size(); i++) {
-			// This allows us to access the variables and methods from Nurse class, and
-			// access us to do operations on each Nurse object in the list.
-			Nurse nurse = nurses.get(i);
+    public boolean LoginAuthentication(String user, String password) { 
+        Session session = sessionFactory.openSession();
+        Transaction transaction = null;
+        Nurse nurse = null;
 
-			// Check if credentials are correct.
-			if (nurse.getUser().equals(user) && nurse.getPassword().equals(password)) {
-				System.out.println("Welcome to the application!.");
-				return true;
-			}
-		}
+        try {
+            transaction = session.beginTransaction();
+            String hql = "FROM Nurse WHERE user = :user AND password = :password"; 
+            Query<Nurse> query = session.createQuery(hql, Nurse.class);
+            query.setParameter("user", user); 
+            query.setParameter("password", password);
 
-		System.err.println("Incorrect login.");
-		return false;
+            nurse = query.uniqueResult();
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+
+        if (nurse != null) {
+            System.out.println("Welcome to the application!.");
+            return true;
+        } else {
+            System.out.println("Invalid credentials.");
+            return false;
+        }
+    }
+
+	public List<Nurse> getNursesInformation() {
+		return null;
 	}
 
 	public ResponseEntity<Nurse> findByName(String name) {
-		for (Nurse nurse : nurses) {
-			System.out.println(nurse);
-			if (name.equals(nurse.getName())) {
-				return ResponseEntity.ok(nurse);
-			}
-		}
 		return ResponseEntity.notFound().build();
 	}
 
