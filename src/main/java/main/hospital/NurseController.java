@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 @RestController
 @RequestMapping("/nurse")
 public class NurseController {
+    
+    private final NurseService nurseService;
 
-	private NurseServiceImpl nurseService;
-
-	@Autowired
-	public NurseController(NurseServiceImpl nurseService) {
-		this.nurseService = nurseService;
-	}
+    @Autowired
+    public NurseController(NurseService nurseService) {
+        this.nurseService = nurseService;
+    }
 
 	@PostMapping("/login")
 	public ResponseEntity<String> login(@RequestBody Nurse nurseLogin) {
@@ -30,12 +30,12 @@ public class NurseController {
 				: ResponseEntity.status(401).body("Incorrect login.");
 	}
 
-	@GetMapping("/index")
-	public List<Nurse> getAll() {
-		return nurseService.getNursesInformation();
-	}
+    @GetMapping("/index")
+    public Iterable<Nurse> getAll() {
+        return nurseService.findAll();
+    }
 
-	@GetMapping("/name/{name}")
+	@GetMapping("/name/{name}")	
 	public ResponseEntity<Nurse> findByName(@PathVariable String name) {
 		return nurseService.findByName(name);
 	}

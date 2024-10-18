@@ -15,7 +15,8 @@ public class Nurse {
 	private String password;
 
 	// Constructor.
-	public Nurse(String name, String user, String password) {
+	public Nurse(Integer id, String name, String user, String password) {
+		this.id = id;
 		this.name = name;
 		this.user = user;
 		this.password = password;
@@ -32,6 +33,10 @@ public class Nurse {
 	}
 	
 	// Getters and setters.
+	public Integer getId() {
+		return id;
+	}
+	
 	public String getName() {
 		return name;
 	}
@@ -42,6 +47,10 @@ public class Nurse {
 
 	public String getPassword() {
 		return password;
+	}
+	
+	public void setId(Integer id) {
+		this.id = id;
 	}
 	
 	public void setName(String name) {
