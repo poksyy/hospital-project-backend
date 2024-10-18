@@ -25,7 +25,7 @@ public class NurseController {
 
 	@PostMapping("/login")
 	public ResponseEntity<String> login(@RequestBody Nurse nurseLogin) {
-		boolean isAuthenticated = nurseService.LoginAuthentication(nurseLogin.getUsername(), nurseLogin.getPassword());
+		boolean isAuthenticated = nurseService.LoginAuthentication(nurseLogin.getUser(), nurseLogin.getPassword());
 		return isAuthenticated ? ResponseEntity.ok("Welcome to the application!")
 				: ResponseEntity.status(401).body("Incorrect login.");
 	}
