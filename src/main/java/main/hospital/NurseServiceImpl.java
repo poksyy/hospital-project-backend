@@ -12,50 +12,49 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-
 @Service
 public class NurseServiceImpl implements NurseService {
 
-	 private SessionFactory sessionFactory;
-   
-   @Autowired
-   private NurseRepository nurseRepository; 
+	private SessionFactory sessionFactory;
 
-    public NurseServiceImpl(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
+	@Autowired
+	private NurseRepository nurseRepository;
 
-    public boolean LoginAuthentication(String user, String password) { 
-        Session session = sessionFactory.openSession();
-        Transaction transaction = null;
-        Nurse nurse = null;
+	public NurseServiceImpl(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
+	}
 
-        try {
-            transaction = session.beginTransaction();
-            String hql = "FROM Nurse WHERE user = :user AND password = :password"; 
-            Query<Nurse> query = session.createQuery(hql, Nurse.class);
-            query.setParameter("user", user); 
-            query.setParameter("password", password);
+	public boolean LoginAuthentication(String user, String password) {
+		Session session = sessionFactory.openSession();
+		Transaction transaction = null;
+		Nurse nurse = null;
 
-            nurse = query.uniqueResult();
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            e.printStackTrace();
-        } finally {
-            session.close();
-        }
+		try {
+			transaction = session.beginTransaction();
+			String hql = "FROM Nurse WHERE user = :user AND password = :password";
+			Query<Nurse> query = session.createQuery(hql, Nurse.class);
+			query.setParameter("user", user);
+			query.setParameter("password", password);
 
-        if (nurse != null) {
-            System.out.println("Welcome to the application!.");
-            return true;
-        } else {
-            System.out.println("Invalid credentials.");
-            return false;
-        }
-    }
+			nurse = query.uniqueResult();
+			transaction.commit();
+		} catch (Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+
+		if (nurse != null) {
+			System.out.println("Welcome to the application!.");
+			return true;
+		} else {
+			System.out.println("Invalid credentials.");
+			return false;
+		}
+	}
 
 	public List<Nurse> getNursesInformation() {
 		return null;
@@ -89,11 +88,14 @@ public class NurseServiceImpl implements NurseService {
 		return false;
 	}
 
+	// Overrides findAll() from NurseService.
+	// Retrieves all nurse records by calling nurseRepository's findAll(), 
+	// which extends CrudRepository.
 	@Override
-    public Iterable<Nurse> findAll() {
-        return nurseRepository.findAll();
-    }
-	
+	public Iterable<Nurse> findAll() {
+		return nurseRepository.findAll();
+	}
+
 	@Override
 	public Iterable<Nurse> findAllById(Iterable<Integer> ids) {
 		// TODO Auto-generated method stub
