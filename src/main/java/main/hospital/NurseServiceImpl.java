@@ -15,8 +15,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class NurseServiceImpl implements NurseService {
 
+	// Instance that will be used to create sessions and interact with the database. 	
 	private SessionFactory sessionFactory;
 
+	// Autowired instance for the CRUD.
 	@Autowired
 	private NurseRepository nurseRepository;
 
@@ -25,31 +27,44 @@ public class NurseServiceImpl implements NurseService {
 	}
 
 	public boolean LoginAuthentication(String user, String password) {
+		
+		// We are getting a session to interact with the database.
 		Session session = sessionFactory.openSession();
+		// We start a transaction instance to guarantee security of the database operations.
 		Transaction transaction = null;
+		// We create an instance of Nurse.
 		Nurse nurse = null;
 
 		try {
+			// Start transaction.
 			transaction = session.beginTransaction();
+			// HQL QUERY to search with user and name.
 			String hql = "FROM Nurse WHERE user = :user AND password = :password";
+			// We create the query waiting for a Nurse object response.
 			Query<Nurse> query = session.createQuery(hql, Nurse.class);
+			// Value of the query  for the user.
 			query.setParameter("user", user);
+			// Value of the query for the password.
 			query.setParameter("password", password);
 
+			// Nurse object has only one(1) unique result.
 			nurse = query.uniqueResult();
+			// Transaction starts if everything is ok.
 			transaction.commit();
-		} catch (Exception e) {
+		} catch (Exception TransactionError) {
 			if (transaction != null) {
 				transaction.rollback();
 			}
-			e.printStackTrace();
+			TransactionError.printStackTrace();
+		// The session always ends regardless of whether the try or catch was executed.
 		} finally {
 			session.close();
 		}
-
+		// Query matched.
 		if (nurse != null) {
 			System.out.println("Welcome to the application!.");
 			return true;
+		// Query did not match.
 		} else {
 			System.out.println("Invalid credentials.");
 			return false;
