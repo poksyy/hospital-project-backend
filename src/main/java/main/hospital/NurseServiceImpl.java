@@ -1,59 +1,67 @@
 package main.hospital;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+
 @Service
 public class NurseServiceImpl implements NurseService {
-	
-	private NurseService nurseService;
 
-	private List<Nurse> nurses = new ArrayList<>();
+	 private SessionFactory sessionFactory;
+   
+   @Autowired
+   private NurseRepository nurseRepository; 
 
-	// Constructor that initializes instances of Nurse to the ArrayList nurses.
-//	public NurseServiceImpl() {
-//		// // We need to pass the same parameters that are expected by the Nurse
-//		// constructor.
-//		nurses.add(new Nurse("Pau", "pl2024769", "pau1234"));
-//		nurses.add(new Nurse("Dylan", "pl2024379", "dylan1234"));
-//		nurses.add(new Nurse("Cristian", "pl2024768", "cristian1234"));
-//
-//	}
+    public NurseServiceImpl(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
-	public boolean LoginAuthentication(String username, String password) {
+    public boolean LoginAuthentication(String user, String password) { 
+        Session session = sessionFactory.openSession();
+        Transaction transaction = null;
+        Nurse nurse = null;
 
-		// Loop to iterate the List 'nurses'.
-		for (int i = 0; i < nurses.size(); i++) {
-			// This allows us to access the variables and methods from Nurse class, and
-			// access us to do operations on each Nurse object in the list.
-			Nurse nurse = nurses.get(i);
+        try {
+            transaction = session.beginTransaction();
+            String hql = "FROM Nurse WHERE user = :user AND password = :password"; 
+            Query<Nurse> query = session.createQuery(hql, Nurse.class);
+            query.setParameter("user", user); 
+            query.setParameter("password", password);
 
-			// Check if credentials are correct.
-			if (nurse.getUsername().equals(username) && nurse.getPassword().equals(password)) {
-				System.out.println("Welcome to the application!.");
-				return true;
-			}
-		}
+            nurse = query.uniqueResult();
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
 
-		System.err.println("Incorrect login.");
-		return false;
-	}
+        if (nurse != null) {
+            System.out.println("Welcome to the application!.");
+            return true;
+        } else {
+            System.out.println("Invalid credentials.");
+            return false;
+        }
+    }
 
 	public List<Nurse> getNursesInformation() {
-		return nurses;
+		return null;
 	}
 
 	public ResponseEntity<Nurse> findByName(String name) {
-		for (Nurse nurse : nurses) {
-			System.out.println(nurse);
-			if (name.equals(nurse.getName())) {
-				return ResponseEntity.ok(nurse);
-			}
-		}
 		return ResponseEntity.notFound().build();
 	}
 
@@ -82,11 +90,10 @@ public class NurseServiceImpl implements NurseService {
 	}
 
 	@Override
-	public Iterable<Nurse> findAll() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+    public Iterable<Nurse> findAll() {
+        return nurseRepository.findAll();
+    }
+	
 	@Override
 	public Iterable<Nurse> findAllById(Iterable<Integer> ids) {
 		// TODO Auto-generated method stub
@@ -102,31 +109,31 @@ public class NurseServiceImpl implements NurseService {
 	@Override
 	public void deleteById(Integer id) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void delete(Nurse entity) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void deleteAllById(Iterable<? extends Integer> ids) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void deleteAll(Iterable<? extends Nurse> entities) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void deleteAll() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }
