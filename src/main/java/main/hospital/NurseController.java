@@ -30,6 +30,8 @@ public class NurseController {
 				: ResponseEntity.status(401).body("Incorrect login.");
 	}
 
+	// This method is mapped to the HTTP GET request at the "/index" endpoint.
+	// It retrieves a list of all nurses from the database.
     @GetMapping("/index")
     public Iterable<Nurse> getAll() {
         return nurseService.findAll();
