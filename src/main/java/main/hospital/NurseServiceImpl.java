@@ -62,33 +62,38 @@ public class NurseServiceImpl implements NurseService {
 	}
 
 	public ResponseEntity<Nurse> findByName(String name) {
-	    Session session = sessionFactory.openSession(); // Open a Hibernate session.
+		// Open a Hibernate session.
+	    Session session = sessionFactory.openSession();
 	    Transaction transaction = null;
-	    Nurse nurse = null; // Save the nurse selected to this variable.
-
+	    // Save the nurse selected to this variable.
+	    Nurse nurse = null;
+	    
 	    try {
 	    	// Start transaction.
 	        transaction = session.beginTransaction();
-	        String hql = "FROM Nurse WHERE name = :name"; // Create an HQL query to search nurse by name.
+	        // Create an HQL query to search nurse by name.
+	        String hql = "FROM Nurse WHERE name = :name";
 	        Query<Nurse> query = session.createQuery(hql, Nurse.class);
 	        query.setParameter("name", name);
-
-	        nurse = query.uniqueResult(); // Return only 1 result. If it returns more than 1 result it will launch an exception.
+	        // Return only 1 result. If it returns more than 1 result it will launch an exception.
+	        nurse = query.uniqueResult();
 	        transaction.commit();
 	    } catch (Exception e) {
 	        if (transaction != null) {
-	            transaction.rollback(); // If there's an error do a rollback.
+	        // If there's an error do a rollback.
+	            transaction.rollback();
 	        }
 	        e.printStackTrace();
 	    } finally {
 	        session.close();
 	    }
 
-	    
-	    if (nurse != null) { // If nurse is found.
+	    // If nurse is found.
+	    if (nurse != null) {
 	        System.out.println(nurse);
 	        return ResponseEntity.ok(nurse);
-	    } else { // If nurse is NOT found.
+	    } else { 
+	    // If nurse is NOT found.
 	        return ResponseEntity.notFound().build();
 	    }
 	}
