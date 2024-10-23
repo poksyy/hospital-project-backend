@@ -3,6 +3,7 @@ package main.hospital;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,7 +28,7 @@ public class NurseController {
 	public ResponseEntity<String> login(@RequestBody Nurse nurseLogin) {
 		boolean isAuthenticated = nurseService.LoginAuthentication(nurseLogin.getUser(), nurseLogin.getPassword());
 		return isAuthenticated ? ResponseEntity.ok("Welcome to the application!")
-				: ResponseEntity.status(401).body("Incorrect login.");
+				: ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect login.");
 	}
 
 	// This method is mapped to the HTTP GET request at the "/index" endpoint.
