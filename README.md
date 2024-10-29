@@ -11,6 +11,7 @@ This repository contains the backend development for a Hospital Management Syste
 ## Technologies Used
 - Java
 - Hibernate
+- MySQL
 
 ## Getting Started
 To set up the project locally, follow these steps:
