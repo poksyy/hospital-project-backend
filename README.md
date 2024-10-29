@@ -16,16 +16,15 @@ This repository contains the backend development for a Hospital Management Syste
 To set up the project locally, follow these steps:
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/yourusername/hospital-management-system-backend.git
-Navigate to the project directory:
-bash
-Copiar código
-cd hospital-management-system-backend
-Install dependencies: (Include instructions specific to your setup, e.g., using Maven or Gradle.)
-Run the application: (Include any necessary commands or configurations to run the backend.)
+   git clone https://github.com/poksyy/hospital-management-system-backend.git
+2. **Navigate to the project directory:**
+   ```bash
+   cd hospital-management-system-backend
+3. **Install dependencies: (Include instructions specific to your setup, e.g., using Maven or Gradle.)**
+4. **Run the application: (Include any necessary commands or configurations to run the backend.)**
 
-##Contributing
+## Contributing
 If you would like to contribute to this project, please fork the repository and submit a pull request.
 
-##License
+## License
 This project is licensed under the MIT License - see the LICENSE file for details.
