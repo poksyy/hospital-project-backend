@@ -4,9 +4,9 @@
 This repository contains the backend development for a Hospital Management System as part of a class project. It is implemented using Java and Hibernate, following the first phase of the course where all teams build a backend for a hospital.
 
 ## Team Members
-- @poksy
-- @krschan
-- @dynavy
+- [@poksy](https://github.com/poksyy)
+- [@krschan](https://github.com/krschan)
+- [@dynavy](https://github.com/dynavy)
 
 ## Technologies Used
 - Java
@@ -23,8 +23,9 @@ Copiar código
 cd hospital-management-system-backend
 Install dependencies: (Include instructions specific to your setup, e.g., using Maven or Gradle.)
 Run the application: (Include any necessary commands or configurations to run the backend.)
-Contributing
+
+##Contributing
 If you would like to contribute to this project, please fork the repository and submit a pull request.
 
-License
+##License
 This project is licensed under the MIT License - see the LICENSE file for details.
