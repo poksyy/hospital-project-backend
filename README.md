@@ -3,6 +3,10 @@
 ## Description
 This repository contains the backend development for a Hospital Management System as part of a class project. It is implemented using Java and Hibernate, following the first phase of the course where all teams build a backend for a hospital.
 
+- **POST /nurse/login**: Authenticates a nurse's login.
+- **GET /nurse/index**: Retrieves a list of all nurses.
+- **GET /nurse/name/{name}**: Finds a nurse by their name.
+
 ## Team Members
 - [@poksy](https://github.com/poksyy)
 - [@krschan](https://github.com/krschan)
