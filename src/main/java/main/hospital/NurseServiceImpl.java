@@ -1,13 +1,10 @@
 package main.hospital;
 
-import java.util.List;
-import java.util.Optional;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,10 +14,6 @@ public class NurseServiceImpl implements NurseService {
 
 	// Instance that will be used to create sessions and interact with the database. 	
 	private SessionFactory sessionFactory;
-
-	// Autowired instance for the CRUD.
-	@Autowired
-	private NurseRepository nurseRepository;
 
 	public NurseServiceImpl(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
@@ -71,10 +64,6 @@ public class NurseServiceImpl implements NurseService {
 		}
 	}
 
-	public List<Nurse> getNursesInformation() {
-		return null;
-	}
-
 	public ResponseEntity<Nurse> findByName(String name) {
 		// Open a Hibernate session.
 	    Session session = sessionFactory.openSession();
@@ -110,81 +99,6 @@ public class NurseServiceImpl implements NurseService {
 	    // If nurse is NOT found.
 	        return ResponseEntity.notFound().build();
 	    }
-	}
-
-
-	@Override
-	public <S extends Nurse> S save(S entity) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public <S extends Nurse> Iterable<S> saveAll(Iterable<S> entities) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Optional<Nurse> findById(Integer id) {
-		// TODO Auto-generated method stub
-		return Optional.empty();
-	}
-
-	@Override
-	public boolean existsById(Integer id) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	// Overrides findAll() from NurseService.
-	// Retrieves all nurse records by calling nurseRepository's findAll(), 
-	// which extends CrudRepository.
-	@Override
-	public Iterable<Nurse> findAll() {
-		return nurseRepository.findAll();
-	}
-
-	@Override
-	public Iterable<Nurse> findAllById(Iterable<Integer> ids) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public long count() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public void deleteById(Integer id) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void delete(Nurse entity) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void deleteAllById(Iterable<? extends Integer> ids) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void deleteAll(Iterable<? extends Nurse> entities) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void deleteAll() {
-		// TODO Auto-generated method stub
-
 	}
 
 }

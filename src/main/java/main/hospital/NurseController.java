@@ -9,18 +9,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
 @RequestMapping("/nurse")
 public class NurseController {
-    
+    private final NurseRepository nurseRepository;
     private final NurseService nurseService;
 
     @Autowired
-    public NurseController(NurseService nurseService) {
+    public NurseController(NurseService nurseService, NurseRepository nurseRepository) {
+    	this.nurseRepository = nurseRepository;
         this.nurseService = nurseService;
     }
 
@@ -33,10 +33,10 @@ public class NurseController {
 
 	// This method is mapped to the HTTP GET request at the "/index" endpoint.
 	// It retrieves a list of all nurses from the database.
-    @GetMapping("/index")
-    public Iterable<Nurse> getAll() {
-        return nurseService.findAll();
-    }
+	@GetMapping("/index")
+	public ResponseEntity<List<Nurse>> getAll() {
+	    return ResponseEntity.ok(nurseRepository.findAll());
+	}
 
 	@GetMapping("/name/{name}")	
 	public ResponseEntity<Nurse> findByName(@PathVariable String name) {
