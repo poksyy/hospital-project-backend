@@ -1,5 +1,6 @@
 package main.hospital;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,11 +36,22 @@ public class NurseController {
 	// It retrieves a list of all nurses from the database.
 	@GetMapping("/index")
 	public ResponseEntity<List<Nurse>> getAll() {
-	    return ResponseEntity.ok(nurseRepository.findAll());
+	    List<Nurse> nurses = new ArrayList<>();
+	    nurseRepository.findAll().forEach(nurses::add);
+	    return ResponseEntity.ok(nurses);
 	}
-
+	
 	@GetMapping("/name/{name}")	
 	public ResponseEntity<Nurse> findByName(@PathVariable String name) {
 		return nurseService.findByName(name);
+	}
+	
+	// This method is mapped tothe HTTP POST request at the "/create" endpoint.
+	// It creates a nurse.
+	@PostMapping("/create")
+	public ResponseEntity<Nurse> createNurse(@RequestBody Nurse nurse) {
+	    nurse.setId(null);
+	    Nurse savedNurse = nurseRepository.save(nurse);
+	    return ResponseEntity.status(HttpStatus.CREATED).body(savedNurse);
 	}
 }
