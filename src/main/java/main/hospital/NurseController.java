@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -50,12 +51,27 @@ public class NurseController {
 		return nurseService.findByName(name);
 	}
 	
-	// This method is mapped tothe HTTP POST request at the "/create	" endpoint.
+	// This method is mapped tothe HTTP POST request at the "/create" endpoint.
 	// It creates a new nurse and returns the saved nurse.
 	@PostMapping("/create")
 	public ResponseEntity<Nurse> createNurse(@RequestBody Nurse nurse) {
 	    nurse.setId(null);
 	    Nurse savedNurse = nurseRepository.save(nurse);
 	    return ResponseEntity.status(HttpStatus.CREATED).body(savedNurse);
+	}
+	
+	//Read
+	//Update
+	
+	// This method is mapped tothe HTTP DELETE request at the "/delete/{id}" endpoint.
+	// It deletes a nurse.
+	@DeleteMapping("/delete/{id}")
+	public ResponseEntity<String> deleteNurse(@PathVariable Integer id) {
+	    if (nurseRepository.existsById(id)) {
+	        nurseRepository.deleteById(id);
+	        return ResponseEntity.ok("Nurse deleted successfully");
+	    } else {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nurse not found");
+	    }
 	}
 }
