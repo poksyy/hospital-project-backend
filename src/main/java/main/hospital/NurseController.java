@@ -25,6 +25,8 @@ public class NurseController {
         this.nurseService = nurseService;
     }
 
+	// This method is mapped to the HTTP POST request at the "/login" endpoint.
+	// It handles user authentication by verifying the provided username and password.
 	@PostMapping("/login")
 	public ResponseEntity<String> login(@RequestBody Nurse nurseLogin) {
 		boolean isAuthenticated = nurseService.LoginAuthentication(nurseLogin.getUser(), nurseLogin.getPassword());
@@ -41,13 +43,15 @@ public class NurseController {
 	    return ResponseEntity.ok(nurses);
 	}
 	
+	// This method is mapped to the HTTP GET request at the "/name/{name}" endpoint.
+	// It retrieves a nurse from the database by their name.
 	@GetMapping("/name/{name}")	
 	public ResponseEntity<Nurse> findByName(@PathVariable String name) {
 		return nurseService.findByName(name);
 	}
 	
-	// This method is mapped tothe HTTP POST request at the "/create" endpoint.
-	// It creates a nurse.
+	// This method is mapped tothe HTTP POST request at the "/create	" endpoint.
+	// It creates a new nurse and returns the saved nurse.
 	@PostMapping("/create")
 	public ResponseEntity<Nurse> createNurse(@RequestBody Nurse nurse) {
 	    nurse.setId(null);
