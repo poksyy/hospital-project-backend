@@ -6,7 +6,7 @@ This repository contains the backend development for a Hospital Management Syste
 - **POST /nurse/login**: Authenticates a nurse's login.
 - **GET /nurse/index**: Retrieves a list of all nurses.
 - **GET /nurse/name/{name}**: Finds a nurse by their name.
-CRUD
+### CRUD
 - **POST /nurse/create**: Creates a nurse.
 - 
 -
