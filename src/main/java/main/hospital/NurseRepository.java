@@ -1,10 +1,14 @@
 package main.hospital;
 
+import java.util.Optional;
+
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface NurseRepository extends CrudRepository<Nurse, Integer> {
-    // NurseRepository belongs to the Data Access Layer (DAO).
-    // Its primary responsibility is to interact directly with the database to perform CRUD operations.
-    // It does not contain business logic, just methods that allow fetching, saving, updating, or deleting entities.
-}
 
+	Optional<Nurse> findByUserAndPassword(String user, String password);
+
+	Optional<Nurse> findByName(String name);
+}
