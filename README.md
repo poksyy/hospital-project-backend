@@ -21,6 +21,7 @@ This repository contains the backend development for a Hospital Management Syste
 - Java
 - Hibernate
 - MySQL
+- Postman
 
 ## Getting Started
 To set up the project locally, follow these steps:
