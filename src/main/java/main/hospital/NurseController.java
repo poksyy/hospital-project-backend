@@ -73,7 +73,7 @@ public class NurseController {
 	//Read
 	//Update
 	
-	// This method is mapped tothe HTTP DELETE request at the "/delete/{id}" endpoint.
+	// This method is mapped to the HTTP DELETE request at the "/delete/{id}" endpoint.
 	// It deletes a nurse.
 	@DeleteMapping("/delete/{id}")
 	public ResponseEntity<String> deleteNurse(@PathVariable Integer id) {
