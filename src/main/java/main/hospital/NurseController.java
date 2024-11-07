@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,6 +27,8 @@ public class NurseController {
 		this.nurseService = nurseService;
 	}
 
+	// This method is mapped to the HTTP POST request at the "/login" endpoint.
+	// It handles user authentication by verifying the provided username and password.
 	@PostMapping("/login")
 	public ResponseEntity<String> login(@RequestBody Nurse loginRequest) {
 		Optional<Nurse> nurse = nurseService.findByUserAndPassword(loginRequest.getUser(), loginRequest.getPassword());
@@ -45,7 +48,9 @@ public class NurseController {
 		return ResponseEntity.ok(nurses);
 	}
 
-	@GetMapping("/name/{name}")
+	// This method is mapped to the HTTP GET request at the "/name/{name}" endpoint.
+	// It retrieves a nurse from the database by their name.
+	@GetMapping("/name/{name}")	
 	public ResponseEntity<Nurse> findByName(@PathVariable String name) {
 		Optional<Nurse> nurse = nurseService.findByName(name);
 
@@ -63,5 +68,20 @@ public class NurseController {
 		nurse.setId(null);
 		Nurse savedNurse = nurseRepository.save(nurse);
 		return ResponseEntity.status(HttpStatus.CREATED).body(savedNurse);
+	}
+	
+	//Read
+	//Update
+	
+	// This method is mapped tothe HTTP DELETE request at the "/delete/{id}" endpoint.
+	// It deletes a nurse.
+	@DeleteMapping("/delete/{id}")
+	public ResponseEntity<String> deleteNurse(@PathVariable Integer id) {
+	    if (nurseRepository.existsById(id)) {
+	        nurseRepository.deleteById(id);
+	        return ResponseEntity.ok("Nurse deleted successfully");
+	    } else {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nurse not found");
+	    }
 	}
 }

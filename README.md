@@ -6,6 +6,11 @@ This repository contains the backend development for a Hospital Management Syste
 - **POST /nurse/login**: Authenticates a nurse's login.
 - **GET /nurse/index**: Retrieves a list of all nurses.
 - **GET /nurse/name/{name}**: Finds a nurse by their name.
+### CRUD
+- **POST /nurse/create**: Creates a nurse.
+- 
+-
+- **DELETE /nurse/delete/{id}**: Deletes a nurse by their id.
 
 ## Team Members
 - [@poksy](https://github.com/poksyy)
@@ -16,6 +21,7 @@ This repository contains the backend development for a Hospital Management Syste
 - Java
 - Hibernate
 - MySQL
+- Postman
 
 ## Getting Started
 To set up the project locally, follow these steps:
