@@ -28,7 +28,8 @@ public class NurseController {
 	}
 
 	// This method is mapped to the HTTP POST request at the "/login" endpoint.
-	// It handles user authentication by verifying the provided username and password.
+	// It handles user authentication by verifying the provided username and
+	// password.
 	@PostMapping("/login")
 	public ResponseEntity<String> login(@RequestBody Nurse loginRequest) {
 		Optional<Nurse> nurse = nurseService.findByUserAndPassword(loginRequest.getUser(), loginRequest.getPassword());
@@ -48,9 +49,9 @@ public class NurseController {
 		return ResponseEntity.ok(nurses);
 	}
 
-	// This method is mapped to the HTTP GET request at the "/name/{name}" endpoint.
+	// This method handles HTTP GET request at "/name/{name}" endpoint.
 	// It retrieves a nurse from the database by their name.
-	@GetMapping("/name/{name}")	
+	@GetMapping("/name/{name}")
 	public ResponseEntity<Nurse> findByName(@PathVariable String name) {
 		Optional<Nurse> nurse = nurseService.findByName(name);
 
@@ -61,27 +62,57 @@ public class NurseController {
 		}
 	}
 
-	// This method is mapped to the HTTP POST request at the "/create" endpoint.
-	// It creates a nurse.
+	// This method is handles HTTP POST request at "/create" endpoint.
+	// It creates a new nurse.
 	@PostMapping("/create")
 	public ResponseEntity<Nurse> createNurse(@RequestBody Nurse nurse) {
 		nurse.setId(null);
 		Nurse savedNurse = nurseRepository.save(nurse);
 		return ResponseEntity.status(HttpStatus.CREATED).body(savedNurse);
 	}
-	
-	//Read
-	//Update
-	
-	// This method is mapped to the HTTP DELETE request at the "/delete/{id}" endpoint.
+
+	// Read
+
+	// This method handles HTTP POST requests at "/update/{id}" endpoint.
+	// It update a nurse's information.
+	@PostMapping("/update/{id}")
+	public ResponseEntity<Nurse> updateNurse(@PathVariable Integer id, @RequestBody Nurse updatedNurse) {
+		// Find the existing nurse by ID, if present, allow updates.
+		Optional<Nurse> existingNurse = nurseRepository.findById(id);
+		if (existingNurse.isPresent()) {
+			Nurse nurse = existingNurse.get();
+
+			// To avoid updating all fields, only the fields provided by the user with a
+			// non-null value in the request will be updated.
+			if (updatedNurse.getName() != null) {
+				nurse.setName(updatedNurse.getName());
+			}
+
+			if (updatedNurse.getUser() != null) {
+				nurse.setUser(updatedNurse.getUser());
+			}
+
+			if (updatedNurse.getPassword() != null) {
+				nurse.setPassword(updatedNurse.getPassword());
+			}
+
+			// Save the updated nurse to the database.
+			Nurse savedNurse = nurseRepository.save(nurse);
+			return ResponseEntity.ok(savedNurse);
+		} else {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+	}
+
+	// This method handles HTTP DELETE request at "/delete/{id}" endpoint.
 	// It deletes a nurse.
 	@DeleteMapping("/delete/{id}")
 	public ResponseEntity<String> deleteNurse(@PathVariable Integer id) {
-	    if (nurseRepository.existsById(id)) {
-	        nurseRepository.deleteById(id);
-	        return ResponseEntity.ok("Nurse deleted successfully");
-	    } else {
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nurse not found");
-	    }
+		if (nurseRepository.existsById(id)) {
+			nurseRepository.deleteById(id);
+			return ResponseEntity.ok("Nurse deleted successfully");
+		} else {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nurse not found");
+		}
 	}
 }
