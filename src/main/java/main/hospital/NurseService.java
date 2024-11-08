@@ -13,4 +13,6 @@ public interface NurseService {
 	public Optional<Nurse> findByUserAndPassword(String user, String password);
 
 	public Optional<Nurse> findByName(String name);
+	
+	 Optional<Nurse> findById(Integer id);
 }

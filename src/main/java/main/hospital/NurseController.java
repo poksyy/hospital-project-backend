@@ -104,6 +104,18 @@ public class NurseController {
 		}
 	}
 
+	// Handles HTTP requests to get a nurse by ID.
+	// Calls the service layer to fetch data and handle business logic.
+		@GetMapping("find/{id}")
+		public ResponseEntity<Nurse> readNurse(@PathVariable Integer id) {
+			Optional<Nurse> nurseAvailable = nurseService.findById(id);
+			if (nurseAvailable.isPresent()) {
+				return ResponseEntity.ok(nurseAvailable.get());
+			} else {
+				return ResponseEntity.notFound().build();
+			}
+		}
+
 	// This method handles HTTP DELETE request at "/delete/{id}" endpoint.
 	// It deletes a nurse.
 	@DeleteMapping("/delete/{id}")

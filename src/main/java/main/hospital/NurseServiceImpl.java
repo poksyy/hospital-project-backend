@@ -24,4 +24,12 @@ public class NurseServiceImpl implements NurseService {
 	public Optional<Nurse> findByUserAndPassword(String user, String password) {
 		return nurseRepository.findByUserAndPassword(user, password);
 	}
+
+	// Implements the business logic to get a nurse by ID.
+	// Calls the repository to access the database.
+	@Override
+	public Optional<Nurse> findById(Integer id) {
+		// TODO Auto-generated method stub
+		return nurseRepository.findById(id);
+	}
 }
