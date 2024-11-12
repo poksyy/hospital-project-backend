@@ -27,7 +27,7 @@ public class NurseController {
 		this.nurseService = nurseService;
 	}
 
-	// This method handles user authentication by verifying the provided username and password.
+	// Handles user authentication by verifying the provided username and password.
 	@PostMapping("/login")
 	public ResponseEntity<String> login(@RequestBody Nurse loginRequest) {
 		Optional<Nurse> nurse = nurseService.findByUserAndPassword(loginRequest.getUser(), loginRequest.getPassword());
@@ -38,7 +38,7 @@ public class NurseController {
 		}
 	}
 
-	// This method handles HTTP GET request at the "/index" endpoint.
+	// Handles HTTP GET request at the "/index" endpoint.
 	// It retrieves a list of all nurses from the database.
 	@GetMapping("/index")
 	public ResponseEntity<List<Nurse>> getAll() {
@@ -47,7 +47,7 @@ public class NurseController {
 		return ResponseEntity.ok(nurses);
 	}
 
-	// This method handles HTTP GET request at "/name/{name}" endpoint.
+	// Handles HTTP GET request at "/name/{name}" endpoint.
 	// It retrieves a nurse from the database by their name.
 	@GetMapping("/name/{name}")
 	public ResponseEntity<Nurse> findByName(@PathVariable String name) {
@@ -59,7 +59,7 @@ public class NurseController {
 		}
 	}
 
-	// This method handles HTTP POST request at "/create" endpoint.
+	// Handles HTTP POST request at "/create" endpoint.
 	// It creates a new nurse in the database.
 	@PostMapping("/create")
 	public ResponseEntity<Nurse> createNurse(@RequestBody Nurse nurse) {
@@ -68,7 +68,7 @@ public class NurseController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(savedNurse);
 	}
 
-	// This method handles HTTP GET request at "/find/{id}" endpoint.
+	// Handles HTTP GET request at "/find/{id}" endpoint.
 	// It retrieves a nurse by ID.
 	@GetMapping("/find/{id}")
 	public ResponseEntity<Nurse> readNurse(@PathVariable Integer id) {
@@ -80,7 +80,7 @@ public class NurseController {
 		}
 	}
 
-	// This method handles HTTP POST request at "/update/{id}" endpoint.
+	// Hndles HTTP POST request at "/update/{id}" endpoint.
 	// It updates a nurse's information based on provided ID.
 	@PostMapping("/update/{id}")
 	public ResponseEntity<Nurse> updateNurse(@PathVariable Integer id, @RequestBody Nurse updatedNurse) {
@@ -105,7 +105,7 @@ public class NurseController {
 		}
 	}
 
-	// This method handles HTTP DELETE request at "/delete/{id}" endpoint.
+	// Handles HTTP DELETE request at "/delete/{id}" endpoint.
 	// It deletes a nurse by ID.
 	@DeleteMapping("/delete/{id}")
 	public ResponseEntity<String> deleteNurse(@PathVariable Integer id) {
