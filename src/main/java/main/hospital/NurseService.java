@@ -14,5 +14,13 @@ public interface NurseService {
 
 	public Optional<Nurse> findByName(String name);
 	
-	 Optional<Nurse> findById(Integer id);
+	// CRUD
+	public Nurse createNurse(Nurse nurse);
+	
+	public Optional<Nurse> findById(Integer id);
+
+	public Optional<Nurse> updateNurse(Integer id, Nurse updatedNurse);
+	
+	public void deleteById(Integer id);
+	
 }

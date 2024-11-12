@@ -71,17 +71,27 @@ public class NurseController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(savedNurse);
 	}
 
-	// Read
+	// Handles HTTP requests to get a nurse by ID.
+	// Calls the service layer to fetch data and handle business logic.
+		@GetMapping("find/{id}")
+		public ResponseEntity<Nurse> readNurse(@PathVariable Integer id) {
+			Optional<Nurse> nurseAvailable = nurseService.findById(id);
+			if (nurseAvailable.isPresent()) {
+				return ResponseEntity.ok(nurseAvailable.get());
+			} else {
+				return ResponseEntity.notFound().build();
+			}
+		}
 
 	// This method handles HTTP POST requests at "/update/{id}" endpoint.
 	// It update a nurse's information.
 	@PostMapping("/update/{id}")
 	public ResponseEntity<Nurse> updateNurse(@PathVariable Integer id, @RequestBody Nurse updatedNurse) {
 		// Find the existing nurse by ID, if present, allow updates.
-		Optional<Nurse> existingNurse = nurseRepository.findById(id);
+		Optional<Nurse> existingNurse = nurseService.findById(id);
 		if (existingNurse.isPresent()) {
 			Nurse nurse = existingNurse.get();
-
+			
 			// To avoid updating all fields, only the fields provided by the user with a
 			// non-null value in the request will be updated.
 			if (updatedNurse.getName() != null) {
@@ -104,24 +114,12 @@ public class NurseController {
 		}
 	}
 
-	// Handles HTTP requests to get a nurse by ID.
-	// Calls the service layer to fetch data and handle business logic.
-		@GetMapping("find/{id}")
-		public ResponseEntity<Nurse> readNurse(@PathVariable Integer id) {
-			Optional<Nurse> nurseAvailable = nurseService.findById(id);
-			if (nurseAvailable.isPresent()) {
-				return ResponseEntity.ok(nurseAvailable.get());
-			} else {
-				return ResponseEntity.notFound().build();
-			}
-		}
-
 	// This method handles HTTP DELETE request at "/delete/{id}" endpoint.
 	// It deletes a nurse.
 	@DeleteMapping("/delete/{id}")
 	public ResponseEntity<String> deleteNurse(@PathVariable Integer id) {
 		if (nurseRepository.existsById(id)) {
-			nurseRepository.deleteById(id);
+			nurseService.deleteById(id);
 			return ResponseEntity.ok("Nurse deleted successfully");
 		} else {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nurse not found");
