@@ -17,7 +17,7 @@ public class Nurse {
 	private String user;
 	private String password;
 
-	// Constructor.
+	// Constructor with parameters for initializing a Nurse object.
 	public Nurse(Integer id, String name, String user, String password) {
 		this.id = id;
 		this.name = name;
@@ -25,12 +25,12 @@ public class Nurse {
 		this.password = password;
 	}
 
-	// This constructor is needed for the deserialization (convert the JSON to a
-	// Java Object).
+	// Default constructor for deserialization (converting JSON to a Java Object).
 	public Nurse() {
 
 	}
 
+	// Constructor for initializing a Nurse object with user credentials.
 	public Nurse(String user, String password) {
 		this.user = user;
 		this.password = password;

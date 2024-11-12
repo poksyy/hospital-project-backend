@@ -27,9 +27,7 @@ public class NurseController {
 		this.nurseService = nurseService;
 	}
 
-	// This method is mapped to the HTTP POST request at the "/login" endpoint.
-	// It handles user authentication by verifying the provided username and
-	// password.
+	// This method handles user authentication by verifying the provided username and password.
 	@PostMapping("/login")
 	public ResponseEntity<String> login(@RequestBody Nurse loginRequest) {
 		Optional<Nurse> nurse = nurseService.findByUserAndPassword(loginRequest.getUser(), loginRequest.getPassword());
@@ -40,7 +38,7 @@ public class NurseController {
 		}
 	}
 
-	// This method is mapped to the HTTP GET request at the "/index" endpoint.
+	// This method handles HTTP GET request at the "/index" endpoint.
 	// It retrieves a list of all nurses from the database.
 	@GetMapping("/index")
 	public ResponseEntity<List<Nurse>> getAll() {
@@ -54,7 +52,6 @@ public class NurseController {
 	@GetMapping("/name/{name}")
 	public ResponseEntity<Nurse> findByName(@PathVariable String name) {
 		Optional<Nurse> nurse = nurseService.findByName(name);
-
 		if (nurse.isPresent()) {
 			return ResponseEntity.ok(nurse.get());
 		} else {
@@ -62,50 +59,44 @@ public class NurseController {
 		}
 	}
 
-	// This method is handles HTTP POST request at "/create" endpoint.
-	// It creates a new nurse.
+	// This method handles HTTP POST request at "/create" endpoint.
+	// It creates a new nurse in the database.
 	@PostMapping("/create")
 	public ResponseEntity<Nurse> createNurse(@RequestBody Nurse nurse) {
-		nurse.setId(null);
+		nurse.setId(null); // Ensure the ID is null for new entries.
 		Nurse savedNurse = nurseRepository.save(nurse);
 		return ResponseEntity.status(HttpStatus.CREATED).body(savedNurse);
 	}
 
-	// Handles HTTP requests to get a nurse by ID.
-	// Calls the service layer to fetch data and handle business logic.
-		@GetMapping("find/{id}")
-		public ResponseEntity<Nurse> readNurse(@PathVariable Integer id) {
-			Optional<Nurse> nurseAvailable = nurseService.findById(id);
-			if (nurseAvailable.isPresent()) {
-				return ResponseEntity.ok(nurseAvailable.get());
-			} else {
-				return ResponseEntity.notFound().build();
-			}
+	// This method handles HTTP GET request at "/find/{id}" endpoint.
+	// It retrieves a nurse by ID.
+	@GetMapping("/find/{id}")
+	public ResponseEntity<Nurse> readNurse(@PathVariable Integer id) {
+		Optional<Nurse> nurseAvailable = nurseService.findById(id);
+		if (nurseAvailable.isPresent()) {
+			return ResponseEntity.ok(nurseAvailable.get());
+		} else {
+			return ResponseEntity.notFound().build();
 		}
+	}
 
-	// This method handles HTTP POST requests at "/update/{id}" endpoint.
-	// It update a nurse's information.
+	// This method handles HTTP POST request at "/update/{id}" endpoint.
+	// It updates a nurse's information based on provided ID.
 	@PostMapping("/update/{id}")
 	public ResponseEntity<Nurse> updateNurse(@PathVariable Integer id, @RequestBody Nurse updatedNurse) {
-		// Find the existing nurse by ID, if present, allow updates.
 		Optional<Nurse> existingNurse = nurseService.findById(id);
 		if (existingNurse.isPresent()) {
 			Nurse nurse = existingNurse.get();
-			
-			// To avoid updating all fields, only the fields provided by the user with a
-			// non-null value in the request will be updated.
+			// Update only fields that are provided and non-null.
 			if (updatedNurse.getName() != null) {
 				nurse.setName(updatedNurse.getName());
 			}
-
 			if (updatedNurse.getUser() != null) {
 				nurse.setUser(updatedNurse.getUser());
 			}
-
 			if (updatedNurse.getPassword() != null) {
 				nurse.setPassword(updatedNurse.getPassword());
 			}
-
 			// Save the updated nurse to the database.
 			Nurse savedNurse = nurseRepository.save(nurse);
 			return ResponseEntity.ok(savedNurse);
@@ -115,7 +106,7 @@ public class NurseController {
 	}
 
 	// This method handles HTTP DELETE request at "/delete/{id}" endpoint.
-	// It deletes a nurse.
+	// It deletes a nurse by ID.
 	@DeleteMapping("/delete/{id}")
 	public ResponseEntity<String> deleteNurse(@PathVariable Integer id) {
 		if (nurseRepository.existsById(id)) {
