@@ -24,7 +24,7 @@ This repository contains the backend development for a Hospital Management Syste
 - MySQL
 - Postman
 
-## Getting Started
+## Installation
 To set up the project locally, follow these steps:
 1. **Clone the repository:**
    ```bash
