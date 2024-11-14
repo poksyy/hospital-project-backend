@@ -63,10 +63,15 @@ public class NurseController {
 	// It creates a new nurse in the database.
 	@PostMapping("/create")
 	public ResponseEntity<Nurse> createNurse(@RequestBody Nurse nurse) {
-		nurse.setId(null); // Ensure the ID is null for new entries.
-		Nurse savedNurse = nurseRepository.save(nurse);
-		return ResponseEntity.status(HttpStatus.CREATED).body(savedNurse);
+	    try {
+	        nurse.setId(null);
+	        Nurse savedNurse = nurseRepository.save(nurse);
+	        return ResponseEntity.status(HttpStatus.CREATED).body(savedNurse);
+	    } catch (Exception e) {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	    }
 	}
+
 
 	// Handles HTTP GET request at "/find/{id}" endpoint.
 	// It retrieves a nurse by ID.
@@ -84,7 +89,7 @@ public class NurseController {
 	// It updates a nurse's information based on provided ID.
 	@PostMapping("/update/{id}")
 	public ResponseEntity<Nurse> updateNurse(@PathVariable Integer id, @RequestBody Nurse updatedNurse) {
-		Optional<Nurse> existingNurse = nurseService.findById(id);
+		Optional<Nurse> existingNurse = nurseRepository.findById(id);
 		if (existingNurse.isPresent()) {
 			Nurse nurse = existingNurse.get();
 			// Update only fields that are provided and non-null.
