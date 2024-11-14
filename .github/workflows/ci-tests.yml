@@ -1,0 +1,37 @@
+name: Spring Boot CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Paso 1: Checkout del código
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Paso 2: Configuración del JDK (Java 11, 17, o la versión que utilices)
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'  # Cambia la versión según necesites
+
+      # Paso 3: Otorgar permisos de ejecución a mvnw
+      - name: Give execute permission to mvnw
+        run: chmod +x ./mvnw
+
+      # Paso 4: Compilar el proyecto de Spring Boot
+      - name: Build with Maven
+        run: ./mvnw clean compile
+
+      # Paso 5: Ejecutar todos los JUnit tests, incluyendo los de NurseControllerTest
+      - name: Run JUnit tests
+        run: ./mvnw test
