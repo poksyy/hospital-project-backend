@@ -19,6 +19,7 @@ This repository contains the backend development for a Hospital Management Syste
 
 ## Technologies Used
 - Java
+- Springboot
 - Hibernate
 - MySQL
 - Postman
