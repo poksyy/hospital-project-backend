@@ -32,7 +32,9 @@ To set up the project locally, follow these steps:
 2. **Navigate to the project directory:**
    ```bash
    cd hospital-management-system-backend
-3. **Install dependencies: (Include instructions specific to your setup, e.g., using Maven or Gradle.)**
+3. **Install dependencies: (e.g., using Maven.)**
+   ```bash
+   mvn install
 4. **Run the application: (Include any necessary commands or configurations to run the backend.)**
 
 ## Contributing
