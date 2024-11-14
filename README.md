@@ -8,8 +8,8 @@ This repository contains the backend development for a Hospital Management Syste
 - **GET /nurse/name/{name}**: Finds a nurse by their name.
 ### CRUD
 - **POST /nurse/create**: Creates a nurse.
-- 
--
+- **GET /nurse/find/{id}**: Finds a nurse by their id.
+- **POST /nurse/update/{id}**: Updates a nurse by their id.
 - **DELETE /nurse/delete/{id}**: Deletes a nurse by their id.
 
 ## Team Members
