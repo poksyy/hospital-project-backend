@@ -1,5 +1,6 @@
 package main.hospital;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,18 +17,23 @@ public class NurseServiceImpl implements NurseService {
 	}
 
 	@Override
+	public Optional<Nurse> findByUserAndPassword(String user, String password) {
+		return nurseRepository.findByUserAndPassword(user, password);
+	}
+	
+	@Override
+	public Iterable<Nurse> findAll() {
+		return nurseRepository.findAll();
+	}
+	
+	@Override
 	public Optional<Nurse> findByName(String name) {
 		return nurseRepository.findByName(name);
 	}
 
-	@Override
-	public Optional<Nurse> findByUserAndPassword(String user, String password) {
-		return nurseRepository.findByUserAndPassword(user, password);
-	}
-
 	// CRUD
 	@Override
-	public Nurse createNurse(Nurse nurse) {
+	public Nurse save(Nurse nurse) {
 		return nurseRepository.save(nurse);
 	}
 	
@@ -45,4 +51,5 @@ public class NurseServiceImpl implements NurseService {
 	public void deleteById(Integer id) {
 		nurseRepository.deleteById(id);
 	}
+
 }

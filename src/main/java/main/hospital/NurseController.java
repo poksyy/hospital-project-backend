@@ -43,7 +43,7 @@ public class NurseController {
 	@GetMapping("/index")
 	public ResponseEntity<List<Nurse>> getAll() {
 		List<Nurse> nurses = new ArrayList<>();
-		nurseRepository.findAll().forEach(nurses::add);
+		nurseService.findAll().forEach(nurses::add);
 		return ResponseEntity.ok(nurses);
 	}
 
@@ -65,7 +65,7 @@ public class NurseController {
 	public ResponseEntity<Nurse> createNurse(@RequestBody Nurse nurse) {
 	    try {
 	        nurse.setId(null);
-	        Nurse savedNurse = nurseRepository.save(nurse);
+	        Nurse savedNurse = nurseService.save(nurse);
 	        return ResponseEntity.status(HttpStatus.CREATED).body(savedNurse);
 	    } catch (Exception e) {
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -89,7 +89,7 @@ public class NurseController {
 	// It updates a nurse's information based on provided ID.
 	@PostMapping("/update/{id}")
 	public ResponseEntity<Nurse> updateNurse(@PathVariable Integer id, @RequestBody Nurse updatedNurse) {
-		Optional<Nurse> existingNurse = nurseRepository.findById(id);
+		Optional<Nurse> existingNurse = nurseService.findById(id);
 		if (existingNurse.isPresent()) {
 			Nurse nurse = existingNurse.get();
 			// Update only fields that are provided and non-null.
@@ -103,7 +103,7 @@ public class NurseController {
 				nurse.setPassword(updatedNurse.getPassword());
 			}
 			// Save the updated nurse to the database.
-			Nurse savedNurse = nurseRepository.save(nurse);
+			Nurse savedNurse = nurseService.save(nurse);
 			return ResponseEntity.ok(savedNurse);
 		} else {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

@@ -1,5 +1,6 @@
 package main.hospital;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface NurseService {
@@ -13,11 +14,14 @@ public interface NurseService {
 	// Retrieves a nurse by their username and password.
 	public Optional<Nurse> findByUserAndPassword(String user, String password);
 
+	// Find all nurses information.
+	public Iterable<Nurse> findAll();
+	
 	// Retrieves a nurse from the database by their name.
 	public Optional<Nurse> findByName(String name);
 	
 	// Creates a new nurse in the database.
-	public Nurse createNurse(Nurse nurse);
+	public Nurse save(Nurse nurse);
 	
 	// Retrieves a nurse by their ID.
 	public Optional<Nurse> findById(Integer id);

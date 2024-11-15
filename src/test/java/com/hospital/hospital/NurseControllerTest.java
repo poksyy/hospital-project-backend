@@ -66,7 +66,7 @@ class NurseControllerTMock {
         Nurse nurse1 = new Nurse("nurse1", "password1");
         Nurse nurse2 = new Nurse("nurse2", "password2");
         List<Nurse> nurseList = Arrays.asList(nurse1, nurse2);
-        when(nurseRepository.findAll()).thenReturn(nurseList);
+        when(nurseService.findAll()).thenReturn(nurseList);
 
         ResponseEntity<List<Nurse>> response = nurseController.getAll();
 
@@ -97,7 +97,7 @@ class NurseControllerTMock {
     @Test
     void testCreateNurse() {
         Nurse nurse = new Nurse("newNurse", "newPassword");
-        when(nurseRepository.save(nurse)).thenReturn(nurse);
+        when(nurseService.save(nurse)).thenReturn(nurse);
 
         ResponseEntity<Nurse> response = nurseController.createNurse(nurse);
 
@@ -109,7 +109,7 @@ class NurseControllerTMock {
     void testCreateNurse_Failure() {
         Nurse nurse = new Nurse("newNurse", "newPassword");
 
-        when(nurseRepository.save(nurse)).thenThrow(new RuntimeException("Error creating Nurse"));
+        when(nurseService.save(nurse)).thenThrow(new RuntimeException("Error creating Nurse"));
 
         ResponseEntity<Nurse> response = nurseController.createNurse(nurse);
 
@@ -123,8 +123,8 @@ class NurseControllerTMock {
         existingNurse.setId(1);
         Nurse updatedNurse = new Nurse("updatedName", "updatedPassword");
 
-        when(nurseRepository.findById(1)).thenReturn(Optional.of(existingNurse));
-        when(nurseRepository.save(existingNurse)).thenReturn(existingNurse);
+        when(nurseService.findById(1)).thenReturn(Optional.of(existingNurse));
+        when(nurseService.save(existingNurse)).thenReturn(existingNurse);
 
         ResponseEntity<Nurse> response = nurseController.updateNurse(1, updatedNurse);
 
