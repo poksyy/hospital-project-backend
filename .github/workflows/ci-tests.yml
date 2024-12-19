@@ -33,4 +33,4 @@ jobs:
 
       # 4 Execute all JUnit tests from the test directory.
       - name: Run JUnit tests
-        run: ./mvnw testtest
+        run: ./mvnw test
