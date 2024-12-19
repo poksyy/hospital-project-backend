@@ -85,30 +85,38 @@ public class NurseController {
 		}
 	}
 
-	// Hndles HTTP POST request at "/update/{id}" endpoint.
+	// Handles HTTP POST request at "/update/{id}" endpoint.
 	// It updates a nurse's information based on provided ID.
 	@PostMapping("/update/{id}")
 	public ResponseEntity<Nurse> updateNurse(@PathVariable Integer id, @RequestBody Nurse updatedNurse) {
-		Optional<Nurse> existingNurse = nurseService.findById(id);
-		if (existingNurse.isPresent()) {
-			Nurse nurse = existingNurse.get();
-			// Update only fields that are provided and non-null.
-			if (updatedNurse.getName() != null) {
-				nurse.setName(updatedNurse.getName());
-			}
-			if (updatedNurse.getUser() != null) {
-				nurse.setUser(updatedNurse.getUser());
-			}
-			if (updatedNurse.getPassword() != null) {
-				nurse.setPassword(updatedNurse.getPassword());
-			}
-			// Save the updated nurse to the database.
-			Nurse savedNurse = nurseService.save(nurse);
-			return ResponseEntity.ok(savedNurse);
-		} else {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-		}
+	    Optional<Nurse> existingNurse = nurseService.findById(id);
+	    if (existingNurse.isPresent()) {
+	        Nurse nurse = existingNurse.get();
+	        
+	        // Validate the fields
+	        if (updatedNurse.getName() == null || updatedNurse.getName().isEmpty()) {
+	            return ResponseEntity.badRequest().body(null);
+	        }
+	        if (updatedNurse.getUser() == null || updatedNurse.getUser().isEmpty()) {
+	            return ResponseEntity.badRequest().body(null);
+	        }
+	        if (updatedNurse.getPassword() == null || updatedNurse.getPassword().isEmpty()) {
+	            return ResponseEntity.badRequest().body(null);
+	        }
+	        
+	        // Update the fields
+	        nurse.setName(updatedNurse.getName());
+	        nurse.setUser(updatedNurse.getUser());
+	        nurse.setPassword(updatedNurse.getPassword());
+	        
+	        // Save the updated nurse to the database
+	        Nurse savedNurse = nurseService.save(nurse);
+	        return ResponseEntity.ok(savedNurse);
+	    } else {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+	    }
 	}
+
 
 	// Handles HTTP DELETE request at "/delete/{id}" endpoint.
 	// It deletes a nurse by ID.
