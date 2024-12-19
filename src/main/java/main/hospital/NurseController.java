@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -85,9 +86,9 @@ public class NurseController {
 		}
 	}
 
-	// Hndles HTTP POST request at "/update/{id}" endpoint.
+	// Handles HTTP POST request at "/update/{id}" endpoint.
 	// It updates a nurse's information based on provided ID.
-	@PostMapping("/update/{id}")
+	@PutMapping("/update/{id}")
 	public ResponseEntity<Nurse> updateNurse(@PathVariable Integer id, @RequestBody Nurse updatedNurse) {
 		Optional<Nurse> existingNurse = nurseService.findById(id);
 		if (existingNurse.isPresent()) {
