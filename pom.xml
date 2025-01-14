@@ -61,14 +61,20 @@
 			<artifactId>spring-boot-devtools</artifactId>
 			<optional>true</optional>
 		</dependency>
-		
+
+		<!-- Jackson-->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
+
+		<!-- Dotenv-->
 		<dependency>
 		    <groupId>io.github.cdimascio</groupId>
 		    <artifactId>java-dotenv</artifactId>
 		    <version>5.2.2</version>
 		</dependency>
 
-		
 	</dependencies>
 
 	<build>
