@@ -176,6 +176,66 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Upload Nurse Image",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "multipart/form-data",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "imageFile\n",
+							"type": "file",
+							"src": "postman-cloud:///1efd33f0-5913-4ee0-965e-63bbf9695a5e"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/nurse/profile/1/upload-image",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"nurse",
+						"profile",
+						"1",
+						"upload-image"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Retrieve Nurse Image",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/nurse/profile/1/image",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"nurse",
+						"profile",
+						"1",
+						"image"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }

@@ -1,6 +1,7 @@
 package main.hospital;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
@@ -130,4 +132,43 @@ public class NurseController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nurse not found");
 		}
 	}
+	
+	
+    @PostMapping("/profile/{id}/upload-image")
+    public ResponseEntity<String> uploadImageNurse(
+            @PathVariable Integer id,
+            @RequestBody MultipartFile imageFile) {
+        try {
+            Optional<Nurse> nurseOptional = nurseService.findById(id);
+            if (nurseOptional.isPresent()) {
+                Nurse nurse = nurseOptional.get();
+                nurse.setProfileImage(imageFile.getBytes());
+                nurseService.save(nurse);
+                return ResponseEntity.ok("Image uploaded successfully.");
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nurse not found.");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload image.");
+        }
+    }
+	
+	// Handles HTTP GET request at "/profile/{id}/image" endpoint.
+	// It retrieves a nurse image by ID.
+    @GetMapping("/profile/{id}/image")
+    public ResponseEntity<String> getImageNurse(@PathVariable Integer id) {
+        Optional<Nurse> nurseOptional = nurseService.findById(id);
+        if (nurseOptional.isPresent()) {
+            Nurse nurse = nurseOptional.get();
+            byte[] imageBytes = nurse.getProfileImage();
+            if (imageBytes != null) {
+                String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+                return ResponseEntity.ok(base64Image);
+            } else {
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No image found for this nurse.");
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nurse not found.");
+        }
+    }
 }
