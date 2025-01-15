@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 
 @Entity
 public class Nurse {
@@ -24,12 +25,17 @@ public class Nurse {
     @JsonProperty("password")
     private String password;
 
+    @Lob
+    @JsonProperty("profile_image")
+    private byte[] profileImage;
+    
     // Constructor with parameters for initializing a Nurse object.
-    public Nurse(Integer id, String name, String user, String password) {
+    public Nurse(Integer id, String name, String user, String password, byte[] profileImage) {
         this.id = id;
         this.name = name;
         this.user = user;
         this.password = password;
+        this.profileImage = profileImage;
     }
 
     // Default constructor for deserialization (converting JSON to a Java Object).
@@ -82,5 +88,10 @@ public class Nurse {
     @JsonProperty("password")
     public void setPassword(String password) {
         this.password = password;
+    }
+    
+    @JsonProperty("profile_image")
+    public void setProfileImage(byte[] profileImage) {
+        this.profileImage = profileImage;
     }
 }
