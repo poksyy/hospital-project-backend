@@ -69,6 +69,11 @@ public class Nurse {
     public String getPassword() {
         return password;
     }
+    
+    @JsonProperty("profile_image")
+    public byte[] getProfileImage() {
+        return profileImage;
+    }
 
     @JsonProperty("id")
     public void setId(Integer id) {
