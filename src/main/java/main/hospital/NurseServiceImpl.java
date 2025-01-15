@@ -51,5 +51,27 @@ public class NurseServiceImpl implements NurseService {
 	public void deleteById(Integer id) {
 		nurseRepository.deleteById(id);
 	}
+	
+    // ProfileImage
+    @Override
+    public Nurse saveProfileImage(Integer id, byte[] image) {
+        Optional<Nurse> optionalNurse = nurseRepository.findById(id);
+        if (optionalNurse.isPresent()) {
+            Nurse nurse = optionalNurse.get();
+            nurse.setProfileImage(image);
+            return nurseRepository.save(nurse);
+        }
+        return null;
+    }
+
+    @Override
+    public byte[] getProfileImage(Integer id) {
+        Optional<Nurse> optionalNurse = nurseRepository.findById(id);
+        if (optionalNurse.isPresent()) {
+            Nurse nurse = optionalNurse.get();
+            return nurse.getProfileImage();
+        }
+        return null;
+    }
 
 }

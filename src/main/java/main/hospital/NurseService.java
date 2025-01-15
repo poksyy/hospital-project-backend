@@ -31,4 +31,11 @@ public interface NurseService {
 	
 	// Deletes a nurse by their ID.
 	public void deleteById(Integer id);
+	
+    // Save a nurse profile image
+    public Nurse saveProfileImage(Integer id, byte[] image);
+
+    // Retrieve a nurse profile image
+    public byte[] getProfileImage(Integer id);
+	
 }
