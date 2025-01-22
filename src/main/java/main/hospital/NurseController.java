@@ -1,7 +1,7 @@
 package main.hospital;
 
+import org.springframework.http.MediaType;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,12 +33,13 @@ public class NurseController {
 
 	// Handles user authentication by verifying the provided username and password.
 	@PostMapping("/authentication")
-	public ResponseEntity<String> login(@RequestBody Nurse loginRequest) {
+	public ResponseEntity<Nurse> login(@RequestBody Nurse loginRequest) {
 		Optional<Nurse> nurse = nurseService.findByUserAndPassword(loginRequest.getUser(), loginRequest.getPassword());
+
 		if (nurse.isPresent()) {
-			return ResponseEntity.ok("Welcome to the application!");
+			return ResponseEntity.ok(nurse.get());
 		} else {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect login.");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
 		}
 	}
 
@@ -67,15 +68,14 @@ public class NurseController {
 	// It creates a new nurse in the database.
 	@PostMapping("/registration")
 	public ResponseEntity<Nurse> createNurse(@RequestBody Nurse nurse) {
-	    try {
-	        nurse.setId(null);
-	        Nurse savedNurse = nurseService.save(nurse);
-	        return ResponseEntity.status(HttpStatus.CREATED).body(savedNurse);
-	    } catch (Exception e) {
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-	    }
+		try {
+			nurse.setId(null);
+			Nurse savedNurse = nurseService.save(nurse);
+			return ResponseEntity.status(HttpStatus.CREATED).body(savedNurse);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
 	}
-
 
 	// Handles HTTP GET request at "/profile/{id}" endpoint.
 	// It retrieves a nurse by ID.
@@ -93,34 +93,33 @@ public class NurseController {
 	// It updates a nurse's information based on provided ID.
 	@PutMapping("/modification/{id}")
 	public ResponseEntity<Nurse> updateNurse(@PathVariable Integer id, @RequestBody Nurse updatedNurse) {
-	    Optional<Nurse> existingNurse = nurseService.findById(id);
-	    if (existingNurse.isPresent()) {
-	        Nurse nurse = existingNurse.get();
-	        
-	        // Validate the fields
-	        if (updatedNurse.getName() == null || updatedNurse.getName().isEmpty()) {
-	            return ResponseEntity.badRequest().body(null);
-	        }
-	        if (updatedNurse.getUser() == null || updatedNurse.getUser().isEmpty()) {
-	            return ResponseEntity.badRequest().body(null);
-	        }
-	        if (updatedNurse.getPassword() == null || updatedNurse.getPassword().isEmpty()) {
-	            return ResponseEntity.badRequest().body(null);
-	        }
-	        
-	        // Update the fields
-	        nurse.setName(updatedNurse.getName());
-	        nurse.setUser(updatedNurse.getUser());
-	        nurse.setPassword(updatedNurse.getPassword());
-	        
-	        // Save the updated nurse to the database
-	        Nurse savedNurse = nurseService.save(nurse);
-	        return ResponseEntity.ok(savedNurse);
-	    } else {
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-	    }
-	}
+		Optional<Nurse> existingNurse = nurseService.findById(id);
+		if (existingNurse.isPresent()) {
+			Nurse nurse = existingNurse.get();
 
+			// Validate the fields
+			if (updatedNurse.getName() == null || updatedNurse.getName().isEmpty()) {
+				return ResponseEntity.badRequest().body(null);
+			}
+			if (updatedNurse.getUser() == null || updatedNurse.getUser().isEmpty()) {
+				return ResponseEntity.badRequest().body(null);
+			}
+			if (updatedNurse.getPassword() == null || updatedNurse.getPassword().isEmpty()) {
+				return ResponseEntity.badRequest().body(null);
+			}
+
+			// Update the fields
+			nurse.setName(updatedNurse.getName());
+			nurse.setUser(updatedNurse.getUser());
+			nurse.setPassword(updatedNurse.getPassword());
+
+			// Save the updated nurse to the database
+			Nurse savedNurse = nurseService.save(nurse);
+			return ResponseEntity.ok(savedNurse);
+		} else {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+	}
 
 	// Handles HTTP DELETE request at "/deletion/{id}" endpoint.
 	// It deletes a nurse by ID.
@@ -133,40 +132,53 @@ public class NurseController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nurse not found");
 		}
 	}
-	
-	
+
 	// Handles HTTP POST request at "/profile/{id}/upload-image" endpoint.
 	// It uploads a nurse image by ID.
 	@PostMapping("/profile/{id}/upload-image")
-	public ResponseEntity<String> uploadImageNurse(@PathVariable Integer id, @RequestParam("image") MultipartFile imageFile) {
-	    try {
-	        Nurse updatedNurse = nurseService.saveProfileImage(id, imageFile.getBytes());
-	        if (updatedNurse != null) {
-	            return ResponseEntity.ok("Image uploaded successfully.");
-	        } else {
-	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nurse not found.");
-	        }
-	    } catch (Exception e) {
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload image.");
-	    }
+	public ResponseEntity<String> uploadImageNurse(@PathVariable Integer id,
+			@RequestParam("image") MultipartFile imageFile) {
+		try {
+			Nurse updatedNurse = nurseService.saveProfileImage(id, imageFile.getBytes());
+			if (updatedNurse != null) {
+				return ResponseEntity.ok("Image uploaded successfully.");
+			} else {
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nurse not found.");
+			}
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload image.");
+		}
 	}
 
-	
 	// Handles HTTP GET request at "/profile/{id}/image" endpoint.
 	// It retrieves a nurse image by ID.
-    @GetMapping("/profile/{id}/image")
-    public ResponseEntity<String> getImageNurse(@PathVariable Integer id) {
-        try {
-            byte[] imageBytes = nurseService.getProfileImage(id);
+	@GetMapping("/profile/{id}/image")
+	public ResponseEntity<byte[]> getImageNurse(@PathVariable Integer id) {
+		byte[] image = nurseService.getProfileImage(id);
 
-            if (imageBytes != null) {
-                String base64Image = Base64.getEncoder().encodeToString(imageBytes);
-                return ResponseEntity.ok(base64Image);
-            } else {
-                return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No image found for this nurse.");
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error retrieving image.");
-        }
-    }
+		// Return 404 if image not found
+		if (image == null)
+			return ResponseEntity.notFound().build();
+
+		// Determine content type based on image bytes.
+		String contentType = getContentType(image);
+
+		return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType)).body(image);
+	}
+
+	// Method to check if the image is PNG or JPEG based on bytes.
+	private String getContentType(byte[] image) {
+
+		// Validation for the JPEG format (starts with 0xFF 0xD8 and ends with 0xFF
+		// 0xD9).
+		if (image[0] == (byte) 0xFF && image[1] == (byte) 0xD8) {
+			return "image/jpeg";
+		}
+		// Validation for the PNG format (starts with 0x89 0x50 0x4E 0x47).
+		else if (image[0] == (byte) 0x89 && image[1] == (byte) 0x50 && image[2] == (byte) 0x4E
+				&& image[3] == (byte) 0x47) {
+			return "image/png";
+		}
+		return "application/octet-stream";
+	}
 }
