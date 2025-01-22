@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "3bfd3253-abb2-4830-a03b-0cc8d2ad94a7",
-		"name": "Nurse API Tests",
+		"_postman_id": "c92d6ae6-1222-4f47-86ef-8247b0dd4215",
+		"name": "Nurse API Tests Copy 2",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "38870746"
+		"_exporter_id": "38870768"
 	},
 	"item": [
 		{
@@ -13,7 +13,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"user\":\"test2\",\r\n    \"password\":\"1234\"\r\n}",
+					"raw": "{\r\n    \"user\":\"holahola\",\r\n    \"password\":\"hola123\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -61,7 +61,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/nurse/name/test",
+					"raw": "http://localhost:8080/nurse/search-by-name/Pau",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -69,8 +69,8 @@
 					"port": "8080",
 					"path": [
 						"nurse",
-						"name",
-						"test"
+						"search-by-name",
+						"Pau"
 					]
 				}
 			},
@@ -91,7 +91,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/nurse/egistration",
+					"raw": "http://localhost:8080/nurse/registration",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -99,7 +99,7 @@
 					"port": "8080",
 					"path": [
 						"nurse",
-						"egistration"
+						"registration"
 					]
 				}
 			},
@@ -111,7 +111,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/nurse/find/9",
+					"raw": "http://localhost:8080/nurse/profile/1",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -119,8 +119,8 @@
 					"port": "8080",
 					"path": [
 						"nurse",
-						"find",
-						"9"
+						"profile",
+						"1"
 					]
 				}
 			},
@@ -162,7 +162,7 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/nurse/delete/9",
+					"raw": "http://localhost:8080/nurse/deletion/9",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -170,7 +170,7 @@
 					"port": "8080",
 					"path": [
 						"nurse",
-						"delete",
+						"deletion",
 						"9"
 					]
 				}
@@ -192,7 +192,7 @@
 					"mode": "formdata",
 					"formdata": [
 						{
-							"key": "imageFile\n",
+							"key": "image\n\n",
 							"type": "file",
 							"src": "postman-cloud:///1efd33f0-5913-4ee0-965e-63bbf9695a5e"
 						}
