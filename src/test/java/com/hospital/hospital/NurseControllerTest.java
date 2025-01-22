@@ -37,17 +37,16 @@ class NurseControllerTMock {
         MockitoAnnotations.openMocks(this);
     }
 	
-	
-	
 	@Test
     void testLogin_Success() {
         Nurse nurse = new Nurse("testUser", "testPassword");
         when(nurseService.findByUserAndPassword("testUser", "testPassword")).thenReturn(Optional.of(nurse));
 
-        ResponseEntity<String> response = nurseController.login(nurse);
+        ResponseEntity<Nurse> response = nurseController.login(nurse);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Welcome to the application!", response.getBody());
+        assertNotNull(response.getBody());
+        assertEquals(nurse, response.getBody()); 
     }
 
     @Test
@@ -55,10 +54,10 @@ class NurseControllerTMock {
         Nurse nurse = new Nurse("wrongUser", "wrongPassword");
         when(nurseService.findByUserAndPassword("wrongUser", "wrongPassword")).thenReturn(Optional.empty());
 
-        ResponseEntity<String> response = nurseController.login(nurse);
+        ResponseEntity<Nurse> response = nurseController.login(nurse);
 
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
-        assertEquals("Incorrect login.", response.getBody());
+        assertNotNull(response.getBody());
     }
 
     @Test
