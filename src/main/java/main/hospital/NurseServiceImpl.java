@@ -55,7 +55,9 @@ public class NurseServiceImpl implements NurseService {
     // ProfileImage
     @Override
     public Nurse saveProfileImage(Integer id, byte[] image) {
+    	// Search the nurse by ID.
         Optional<Nurse> optionalNurse = nurseRepository.findById(id);
+        
         if (optionalNurse.isPresent()) {
             Nurse nurse = optionalNurse.get();
             nurse.setProfileImage(image);
@@ -66,12 +68,13 @@ public class NurseServiceImpl implements NurseService {
 
     @Override
     public byte[] getProfileImage(Integer id) {
-        Optional<Nurse> optionalNurse = nurseRepository.findById(id);
-        if (optionalNurse.isPresent()) {
-            Nurse nurse = optionalNurse.get();
-            return nurse.getProfileImage();
-        }
-        return null;
-    }
+    	// Search the nurse by ID.
+        Nurse nurse = nurseRepository.findById(id).orElse(null);
 
+        if (nurse == null) {
+            return null;
+        }
+        // Returns the image in byte format.
+        return nurse.getProfileImage(); 
+    }
 }
