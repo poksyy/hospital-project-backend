@@ -1,6 +1,5 @@
 package main.hospital;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface NurseService {
@@ -37,5 +36,4 @@ public interface NurseService {
 
     // Retrieve a nurse profile image
     public byte[] getProfileImage(Integer id);
-	
 }
