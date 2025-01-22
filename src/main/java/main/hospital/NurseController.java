@@ -1,7 +1,7 @@
 package main.hospital;
 
+import org.springframework.http.MediaType;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -155,18 +155,32 @@ public class NurseController {
 	// Handles HTTP GET request at "/profile/{id}/image" endpoint.
 	// It retrieves a nurse image by ID.
     @GetMapping("/profile/{id}/image")
-    public ResponseEntity<String> getImageNurse(@PathVariable Integer id) {
-        try {
-            byte[] imageBytes = nurseService.getProfileImage(id);
+    public ResponseEntity<byte[]> getImageNurse(@PathVariable Integer id) {
+        byte[] image = nurseService.getProfileImage(id);
 
-            if (imageBytes != null) {
-                String base64Image = Base64.getEncoder().encodeToString(imageBytes);
-                return ResponseEntity.ok(base64Image);
-            } else {
-                return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No image found for this nurse.");
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error retrieving image.");
+        // Return 404 if image not found
+        if (image == null) return ResponseEntity.notFound().build();
+
+        // Determine content type based on image bytes.
+        String contentType = getContentType(image);
+
+        return ResponseEntity.ok()
+                             .contentType(MediaType.parseMediaType(contentType)) 
+                             .body(image);  
+    }
+    
+    
+    // Method to check if the image is PNG or JPEG based on bytes.
+    private String getContentType(byte[] image) {
+      
+    	  // Validation for the JPEG format (starts with 0xFF 0xD8 and ends with 0xFF 0xD9).
+        if (image[0] == (byte) 0xFF && image[1] == (byte) 0xD8) {
+            return "image/jpeg"; 
         }
+        // Validation for the PNG format (starts with 0x89 0x50 0x4E 0x47).
+        else if (image[0] == (byte) 0x89 && image[1] == (byte) 0x50 && image[2] == (byte) 0x4E && image[3] == (byte) 0x47) {
+            return "image/png"; 
+        }
+        return "application/octet-stream";
     }
 }
