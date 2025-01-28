@@ -62,17 +62,23 @@
 			<optional>true</optional>
 		</dependency>
 
-		<!-- Jackson-->
+		<!-- Jackson -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 		</dependency>
 
-		<!-- Dotenv-->
+		<!-- Dotenv -->
 		<dependency>
 		    <groupId>io.github.cdimascio</groupId>
 		    <artifactId>java-dotenv</artifactId>
 		    <version>5.2.2</version>
+		</dependency>
+
+		<!-- BCrypt -->
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 
 	</dependencies>

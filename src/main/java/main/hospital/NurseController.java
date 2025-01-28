@@ -181,4 +181,10 @@ public class NurseController {
 		}
 		return "application/octet-stream";
 	}
+	
+	//Method to check username availability
+    @GetMapping("/checkUserAvailability")
+    public boolean checkUserAvailability(@RequestParam String user) {
+        return nurseService.checkUserAvailability(user);
+    }
 }

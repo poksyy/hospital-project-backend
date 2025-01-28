@@ -1,8 +1,8 @@
 package main.hospital;
 
-import java.util.List;
 import java.util.Optional;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,10 +10,12 @@ import org.springframework.stereotype.Service;
 public class NurseServiceImpl implements NurseService {
 
 	private final NurseRepository nurseRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
 	@Autowired
 	public NurseServiceImpl(NurseRepository nurseRepository) {
 		this.nurseRepository = nurseRepository;
+		this.passwordEncoder = new BCryptPasswordEncoder();
 	}
 
 	@Override
@@ -34,8 +36,32 @@ public class NurseServiceImpl implements NurseService {
 	// CRUD
 	@Override
 	public Nurse save(Nurse nurse) {
-		return nurseRepository.save(nurse);
+        if (!isValidPassword(nurse.getPassword())) {
+            throw new IllegalArgumentException("La contraseña no cumple con los requisitos de seguridad.");
+        }
+
+        nurse.setPassword(passwordEncoder.encode(nurse.getPassword()));
+        
+        return nurseRepository.save(nurse);
 	}
+	
+    private boolean isValidPassword(String password) {
+        if (password == null || password.length() < 8) {
+            return false;
+        }
+        if (!password.matches(".*[A-Z].*")) {
+            return false;
+        }
+
+        if (!password.matches(".*[0-9].*")) {
+            return false;
+        }
+        
+        if (!password.matches(".*[!@#$%^&*()-_+=<>?].*")) {
+            return false;
+        }
+        return true;
+    }
 	
 	@Override
 	public Optional<Nurse> findById(Integer id) {
@@ -76,5 +102,9 @@ public class NurseServiceImpl implements NurseService {
         }
         // Returns the image in byte format.
         return nurse.getProfileImage(); 
+    }
+    
+    public boolean checkUserAvailability(String user) {
+        return !nurseRepository.existsByUser(user);
     }
 }
