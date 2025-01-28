@@ -10,5 +10,7 @@ public interface NurseRepository extends CrudRepository<Nurse, Integer> {
 
 	Optional<Nurse> findByUserAndPassword(String user, String password);
 
-	Optional<Nurse> findByName(String name);
-}
+    Optional<Nurse> findByName(String name);
+    
+    boolean existsByUser(String user);
+    }

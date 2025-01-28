@@ -36,4 +36,8 @@ public interface NurseService {
 
     // Retrieve a nurse profile image
     public byte[] getProfileImage(Integer id);
+    
+    // Retrieve name availability
+    public boolean checkUserAvailability(String user);
+
 }
