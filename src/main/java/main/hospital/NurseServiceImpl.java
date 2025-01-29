@@ -37,7 +37,7 @@ public class NurseServiceImpl implements NurseService {
 	@Override
 	public Nurse save(Nurse nurse) {
         if (!isValidPassword(nurse.getPassword())) {
-            throw new IllegalArgumentException("La contraseña no cumple con los requisitos de seguridad.");
+            throw new IllegalArgumentException("Password requeriments are incorrect.");
         }
 
         nurse.setPassword(passwordEncoder.encode(nurse.getPassword()));
