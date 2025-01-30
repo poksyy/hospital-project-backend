@@ -121,6 +121,26 @@ public class NurseController {
 		}
 	}
 
+	// Handles HTTP POST request at "/modification/{id}" endpoint.
+	// It updates a nurse's information based on provided ID.
+	@PutMapping("/profile-modification/{id}")
+	public ResponseEntity<Nurse> updateNurseProfile(@PathVariable Integer id, @RequestBody Nurse updatedNurse) {
+		Optional<Nurse> existingNurse = nurseService.findById(id);
+		if (existingNurse.isPresent()) {
+			Nurse nurse = existingNurse.get();
+
+			// Update the fields
+			nurse.setName(updatedNurse.getName());
+			nurse.setUser(updatedNurse.getUser());
+
+			// Save the updated nurse to the database
+			Nurse savedNurse = nurseService.updateProfileChanges(nurse);
+			return ResponseEntity.ok(savedNurse);
+		} else {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+	}
+
 	// Handles HTTP DELETE request at "/deletion/{id}" endpoint.
 	// It deletes a nurse by ID.
 	@DeleteMapping("/deletion/{id}")
@@ -181,10 +201,10 @@ public class NurseController {
 		}
 		return "application/octet-stream";
 	}
-	
-	//Method to check username availability
-    @GetMapping("/checkUserAvailability")
-    public boolean checkUserAvailability(@RequestParam String user) {
-        return nurseService.checkUserAvailability(user);
-    }
+
+	// Method to check username availability
+	@GetMapping("/checkUserAvailability")
+	public boolean checkUserAvailability(@RequestParam String user) {
+		return nurseService.checkUserAvailability(user);
+	}
 }

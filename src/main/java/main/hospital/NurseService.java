@@ -22,6 +22,9 @@ public interface NurseService {
 	// Creates a new nurse in the database.
 	public Nurse save(Nurse nurse);
 	
+	// Updates the Nurse user and name in the database.
+	public Nurse updateProfileChanges (Nurse nurse);
+	
 	// Retrieves a nurse by their ID.
 	public Optional<Nurse> findById(Integer id);
 
