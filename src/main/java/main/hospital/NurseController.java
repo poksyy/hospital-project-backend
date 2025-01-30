@@ -47,14 +47,16 @@ public class NurseController {
 	// Handles HTTP POST request at "/register" endpoint.
 	// It creates a new nurse in the database.
 	@PostMapping("/register")
-	public ResponseEntity<Nurse> createNurse(@RequestBody Nurse nurse) {
-		try {
-			nurse.setId(null);
-			Nurse newRegisteredNurse = nurseService.registerNurse(nurse);
-			return ResponseEntity.status(HttpStatus.CREATED).body(newRegisteredNurse);
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		}
+	public ResponseEntity<Object> createNurse(@RequestBody Nurse nurse) {
+	    try {
+	        nurse.setId(null);
+	        Nurse newRegisteredNurse = nurseService.registerNurse(nurse);
+	        return ResponseEntity.status(HttpStatus.CREATED).body(newRegisteredNurse);
+	    } catch (IllegalArgumentException e) {
+	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
+	    } catch (Exception e) {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected error: " + e.getMessage());
+	    }
 	}
 
 	// Handles HTTP GET request at the "/nurses" endpoint.
@@ -68,7 +70,7 @@ public class NurseController {
 
 	// Handles HTTP GET request at "/nurses{name}" endpoint.
 	// It retrieves a nurse from the database by their name.
-	@GetMapping("/nurses/{name}")
+	@GetMapping("/nurses/{name}/name")
 	public ResponseEntity<Nurse> getNurseByName(@PathVariable String name) {
 		Optional<Nurse> nurse = nurseService.findByName(name);
 		if (nurse.isPresent()) {
@@ -90,25 +92,16 @@ public class NurseController {
 		}
 	}
 
-	// Handles HTTP PUT request at "/nurses/{id}" endpoint.
-	// It updates a nurse's information based on provided ID.
 	@PutMapping("/nurses/{id}")
-	public ResponseEntity<Nurse> updateNurse(@PathVariable Integer id, @RequestBody Nurse updatedNurse) {
-		Optional<Nurse> existingNurse = nurseService.findById(id);
-		if (existingNurse.isPresent()) {
-			Nurse nurse = existingNurse.get();
-
-			// Update the fields
-			nurse.setName(updatedNurse.getName());
-			nurse.setUser(updatedNurse.getUser());
-			nurse.setPassword(updatedNurse.getPassword());
-
-			// Save the updated nurse to the database
-			Nurse savedNurse = nurseService.registerNurse(nurse);
-			return ResponseEntity.ok(savedNurse);
-		} else {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-		}
+	public ResponseEntity<Object> updateNurse(@PathVariable Integer id, @RequestBody Nurse updatedNurse) {
+	    try {
+	        Nurse updatedNurseData = nurseService.updateNurseInformation(id, updatedNurse);
+	        return ResponseEntity.ok(updatedNurseData);
+	    } catch (IllegalArgumentException e) {
+	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
+	    } catch (Exception e) {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected error: " + e.getMessage());
+	    }
 	}
 
 	// Handles HTTP POST request at "nurses/{id}/profile" endpoint.
@@ -202,9 +195,4 @@ public class NurseController {
 		return "application/octet-stream";
 	}
 
-	// Method to check username availability
-	@GetMapping("/checkUserAvailability")
-	public boolean checkUserAvailability(@RequestParam String user) {
-		return nurseService.isUserAvailable(user);
-	}
 }
