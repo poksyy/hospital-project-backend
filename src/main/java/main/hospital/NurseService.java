@@ -14,16 +14,16 @@ public interface NurseService {
 	public Optional<Nurse> findByUserAndPassword(String user, String password);
 
 	// Find all nurses information.
-	public Iterable<Nurse> findAll();
+	public Iterable<Nurse> findAllNurses();
 	
 	// Retrieves a nurse from the database by their name.
 	public Optional<Nurse> findByName(String name);
 	
 	// Creates a new nurse in the database.
-	public Nurse save(Nurse nurse);
+	public Nurse registerNurse(Nurse nurse);
 	
 	// Updates the Nurse user and name in the database.
-	public Nurse updateProfileChanges (Nurse nurse);
+	public Nurse updateNameAndUsername (Nurse nurse);
 	
 	// Retrieves a nurse by their ID.
 	public Optional<Nurse> findById(Integer id);
@@ -41,6 +41,6 @@ public interface NurseService {
     public byte[] getProfileImage(Integer id);
     
     // Retrieve name availability
-    public boolean checkUserAvailability(String user);
+    public boolean isUserAvailable(String user);
 
 }

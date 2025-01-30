@@ -20,7 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
-@RequestMapping("/nurse")
+@RequestMapping("/hospital")
 public class NurseController {
 	private final NurseRepository nurseRepository;
 	private final NurseService nurseService;
@@ -31,8 +31,9 @@ public class NurseController {
 		this.nurseService = nurseService;
 	}
 
-	// Handles user authentication by verifying the provided username and password.
-	@PostMapping("/authentication")
+	// Handles HTTP POST request at the "/login" endpoint.
+	// It provides a login to the Nurse account.
+	@PostMapping("/login")
 	public ResponseEntity<Nurse> login(@RequestBody Nurse loginRequest) {
 		Optional<Nurse> nurse = nurseService.findByUserAndPassword(loginRequest.getUser(), loginRequest.getPassword());
 
@@ -43,19 +44,32 @@ public class NurseController {
 		}
 	}
 
-	// Handles HTTP GET request at the "/directory" endpoint.
+	// Handles HTTP POST request at "/register" endpoint.
+	// It creates a new nurse in the database.
+	@PostMapping("/register")
+	public ResponseEntity<Nurse> createNurse(@RequestBody Nurse nurse) {
+		try {
+			nurse.setId(null);
+			Nurse newRegisteredNurse = nurseService.registerNurse(nurse);
+			return ResponseEntity.status(HttpStatus.CREATED).body(newRegisteredNurse);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+
+	// Handles HTTP GET request at the "/nurses" endpoint.
 	// It retrieves a list of all nurses from the database.
-	@GetMapping("/directory")
-	public ResponseEntity<List<Nurse>> getAll() {
+	@GetMapping("/nurses")
+	public ResponseEntity<List<Nurse>> getAllNurses() {
 		List<Nurse> nurses = new ArrayList<>();
-		nurseService.findAll().forEach(nurses::add);
+		nurseService.findAllNurses().forEach(nurses::add);
 		return ResponseEntity.ok(nurses);
 	}
 
-	// Handles HTTP GET request at "/search-by-name/{name}" endpoint.
+	// Handles HTTP GET request at "/nurses{name}" endpoint.
 	// It retrieves a nurse from the database by their name.
-	@GetMapping("/search-by-name/{name}")
-	public ResponseEntity<Nurse> findByName(@PathVariable String name) {
+	@GetMapping("/nurses/{name}")
+	public ResponseEntity<Nurse> getNurseByName(@PathVariable String name) {
 		Optional<Nurse> nurse = nurseService.findByName(name);
 		if (nurse.isPresent()) {
 			return ResponseEntity.ok(nurse.get());
@@ -64,23 +78,10 @@ public class NurseController {
 		}
 	}
 
-	// Handles HTTP POST request at "/registration" endpoint.
-	// It creates a new nurse in the database.
-	@PostMapping("/registration")
-	public ResponseEntity<Nurse> createNurse(@RequestBody Nurse nurse) {
-		try {
-			nurse.setId(null);
-			Nurse savedNurse = nurseService.save(nurse);
-			return ResponseEntity.status(HttpStatus.CREATED).body(savedNurse);
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		}
-	}
-
 	// Handles HTTP GET request at "/profile/{id}" endpoint.
 	// It retrieves a nurse by ID.
-	@GetMapping("/profile/{id}")
-	public ResponseEntity<Nurse> readNurse(@PathVariable Integer id) {
+	@GetMapping("/nurses/{id}")
+	public ResponseEntity<Nurse> getNurseById(@PathVariable Integer id) {
 		Optional<Nurse> nurseAvailable = nurseService.findById(id);
 		if (nurseAvailable.isPresent()) {
 			return ResponseEntity.ok(nurseAvailable.get());
@@ -89,24 +90,13 @@ public class NurseController {
 		}
 	}
 
-	// Handles HTTP POST request at "/modification/{id}" endpoint.
+	// Handles HTTP PUT request at "/nurses/{id}" endpoint.
 	// It updates a nurse's information based on provided ID.
-	@PutMapping("/modification/{id}")
+	@PutMapping("/nurses/{id}")
 	public ResponseEntity<Nurse> updateNurse(@PathVariable Integer id, @RequestBody Nurse updatedNurse) {
 		Optional<Nurse> existingNurse = nurseService.findById(id);
 		if (existingNurse.isPresent()) {
 			Nurse nurse = existingNurse.get();
-
-			// Validate the fields
-			if (updatedNurse.getName() == null || updatedNurse.getName().isEmpty()) {
-				return ResponseEntity.badRequest().body(null);
-			}
-			if (updatedNurse.getUser() == null || updatedNurse.getUser().isEmpty()) {
-				return ResponseEntity.badRequest().body(null);
-			}
-			if (updatedNurse.getPassword() == null || updatedNurse.getPassword().isEmpty()) {
-				return ResponseEntity.badRequest().body(null);
-			}
 
 			// Update the fields
 			nurse.setName(updatedNurse.getName());
@@ -114,16 +104,16 @@ public class NurseController {
 			nurse.setPassword(updatedNurse.getPassword());
 
 			// Save the updated nurse to the database
-			Nurse savedNurse = nurseService.save(nurse);
+			Nurse savedNurse = nurseService.registerNurse(nurse);
 			return ResponseEntity.ok(savedNurse);
 		} else {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 	}
 
-	// Handles HTTP POST request at "/modification/{id}" endpoint.
+	// Handles HTTP POST request at "nurses/{id}/profile" endpoint.
 	// It updates a nurse's information based on provided ID.
-	@PutMapping("/profile-modification/{id}")
+	@PutMapping("/nurses/{id}/profile")
 	public ResponseEntity<Nurse> updateNurseProfile(@PathVariable Integer id, @RequestBody Nurse updatedNurse) {
 		Optional<Nurse> existingNurse = nurseService.findById(id);
 		if (existingNurse.isPresent()) {
@@ -134,16 +124,16 @@ public class NurseController {
 			nurse.setUser(updatedNurse.getUser());
 
 			// Save the updated nurse to the database
-			Nurse savedNurse = nurseService.updateProfileChanges(nurse);
+			Nurse savedNurse = nurseService.updateNameAndUsername(nurse);
 			return ResponseEntity.ok(savedNurse);
 		} else {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 	}
 
-	// Handles HTTP DELETE request at "/deletion/{id}" endpoint.
+	// Handles HTTP DELETE request at "/nurses/{id}" endpoint.
 	// It deletes a nurse by ID.
-	@DeleteMapping("/deletion/{id}")
+	@DeleteMapping("/nurses/{id}")
 	public ResponseEntity<String> deleteNurse(@PathVariable Integer id) {
 		if (nurseRepository.existsById(id)) {
 			nurseService.deleteById(id);
@@ -153,13 +143,23 @@ public class NurseController {
 		}
 	}
 
-	// Handles HTTP POST request at "/profile/{id}/upload-image" endpoint.
+	// Handles HTTP POST request at "/nurses/{id}/upload-image" endpoint.
 	// It uploads a nurse image by ID.
-	@PostMapping("/profile/{id}/upload-image")
-	public ResponseEntity<String> uploadImageNurse(@PathVariable Integer id,
+	@PostMapping("/nurses/{id}/upload-image")
+	public ResponseEntity<String> uploadNurseImage(@PathVariable Integer id,
 			@RequestParam("image") MultipartFile imageFile) {
+		
 		try {
-			Nurse updatedNurse = nurseService.saveProfileImage(id, imageFile.getBytes());
+			byte[] imageBytes = imageFile.getBytes();
+			String contentType = getContentType(imageBytes);
+
+			// Validate image type (jpeg/png).
+			if (!contentType.equals("image/jpeg") && !contentType.equals("image/png")) {
+				return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+						.body("Only PNG and JPEG images are allowed.");
+			}
+
+			Nurse updatedNurse = nurseService.saveProfileImage(id, imageBytes);
 			if (updatedNurse != null) {
 				return ResponseEntity.ok("Image uploaded successfully.");
 			} else {
@@ -170,10 +170,10 @@ public class NurseController {
 		}
 	}
 
-	// Handles HTTP GET request at "/profile/{id}/image" endpoint.
+	// Handles HTTP GET request at "/nurses/{id}/image" endpoint.
 	// It retrieves a nurse image by ID.
 	@GetMapping("/profile/{id}/image")
-	public ResponseEntity<byte[]> getImageNurse(@PathVariable Integer id) {
+	public ResponseEntity<byte[]> getNurseImage(@PathVariable Integer id) {
 		byte[] image = nurseService.getProfileImage(id);
 
 		// Return 404 if image not found
@@ -205,6 +205,6 @@ public class NurseController {
 	// Method to check username availability
 	@GetMapping("/checkUserAvailability")
 	public boolean checkUserAvailability(@RequestParam String user) {
-		return nurseService.checkUserAvailability(user);
+		return nurseService.isUserAvailable(user);
 	}
 }
