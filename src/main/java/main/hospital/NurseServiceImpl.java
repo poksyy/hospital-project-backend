@@ -36,15 +36,27 @@ public class NurseServiceImpl implements NurseService {
 
 	@Override
 	public Nurse registerNurse(Nurse nurse) {
-		
-		if (!nurseValidator.isValidPassword(nurse.getPassword())) {
-			throw new IllegalArgumentException("Password requirements are incorrect.");
-		}
-		if (!nurseValidator.isValidNurseRegister(nurse)) {
-			throw new IllegalArgumentException("Fields cannot be empty.");
-		}
-		nurse.setPassword(passwordEncoder.encode(nurse.getPassword()));
-		return nurseRepository.save(nurse);
+	    try {
+	        if (!nurseValidator.isValidPassword(nurse.getPassword())) {
+	            throw new IllegalArgumentException("Password requirements are incorrect.");
+	        }
+	        
+	        if (!nurseValidator.isValidNurseRegister(nurse)) {
+	            throw new IllegalArgumentException("Fields cannot be empty.");
+	        }
+	        
+	        if (nurseValidator.isUsernameTaken(nurse.getUser(), nurseRepository)) {
+	            throw new IllegalArgumentException("Username is already taken.");
+	        }
+
+	        nurse.setPassword(passwordEncoder.encode(nurse.getPassword()));
+	        
+	        return nurseRepository.save(nurse);
+	    } catch (IllegalArgumentException e) {
+	        throw e;
+	    } catch (Exception e) {
+	        throw new RuntimeException("Unexpected error: " + e.getMessage(), e);
+	    }
 	}
 
 	@Override
@@ -57,6 +69,27 @@ public class NurseServiceImpl implements NurseService {
 		return nurseRepository.save(nurse);
 	}
 
+    @Override
+    public Nurse updateNurseInformation(Integer id, Nurse updatedNurse) {
+        Optional<Nurse> existingNurse = nurseRepository.findById(id);
+        
+        if (!existingNurse.isPresent()) {
+            throw new IllegalArgumentException("Nurse not found.");
+        }
+
+        Nurse nurse = existingNurse.get();
+
+        if (!nurseValidator.isValidPassword(updatedNurse.getPassword())) {
+            throw new IllegalArgumentException("Password does not meet the required criteria.");
+        }
+
+        nurse.setName(updatedNurse.getName());
+        nurse.setUser(updatedNurse.getUser());
+        nurse.setPassword(updatedNurse.getPassword());
+
+        return nurseRepository.save(nurse);
+    }
+	
 	@Override
 	public Optional<Nurse> findById(Integer id) {
 		return nurseRepository.findById(id);
@@ -87,9 +120,5 @@ public class NurseServiceImpl implements NurseService {
 	public byte[] getProfileImage(Integer id) {
 		Nurse nurse = nurseRepository.findById(id).orElse(null);
 		return (nurse != null) ? nurse.getProfileImage() : null;
-	}
-
-	public boolean isUserAvailable(String user) {
-		return nurseValidator.isUserAvailable(user, nurseRepository);
 	}
 }

@@ -29,17 +29,18 @@ public class NurseValidator {
 		}
 		Optional<Nurse> currentNurse = nurseRepository.findById(nurse.getId());
 		if (currentNurse.isPresent() && !currentNurse.get().getUser().equals(nurse.getUser())) {
-			return isUserAvailable(nurse.getUser(), nurseRepository);
+			return isUsernameTaken(nurse.getUser(), nurseRepository);
 		}
 		return true;
 	}
 
 	public boolean isValidNurseRegister(Nurse nurse) {
-		return !(nurse.getUser() == null || nurse.getName() == null || nurse.getUser().trim().isEmpty()
-				|| nurse.getName().trim().isEmpty());
+	    return nurse.getName() != null && !nurse.getName().trim().isEmpty() &&
+	           nurse.getUser() != null && !nurse.getUser().trim().isEmpty() &&
+	           nurse.getPassword() != null && !nurse.getPassword().trim().isEmpty();
 	}
 
-	public boolean isUserAvailable(String user, NurseRepository nurseRepository) {
-		return !nurseRepository.existsByUser(user);
+	public boolean isUsernameTaken(String user, NurseRepository nurseRepository) {
+	    return nurseRepository.existsByUser(user);
 	}
 }

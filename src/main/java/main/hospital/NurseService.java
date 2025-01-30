@@ -22,6 +22,9 @@ public interface NurseService {
 	// Creates a new nurse in the database.
 	public Nurse registerNurse(Nurse nurse);
 	
+	// Updates the all the Nurse information.
+    public Nurse updateNurseInformation(Integer id, Nurse updatedNurse);
+	
 	// Updates the Nurse user and name in the database.
 	public Nurse updateNameAndUsername (Nurse nurse);
 	
@@ -39,8 +42,5 @@ public interface NurseService {
 
     // Retrieve a nurse profile image
     public byte[] getProfileImage(Integer id);
-    
-    // Retrieve name availability
-    public boolean isUserAvailable(String user);
 
 }
