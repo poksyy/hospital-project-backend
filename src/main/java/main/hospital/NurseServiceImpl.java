@@ -36,6 +36,7 @@ public class NurseServiceImpl implements NurseService {
 	// CRUD
 	@Override
 	public Nurse save(Nurse nurse) {
+		
         if (!isValidPassword(nurse.getPassword())) {
             throw new IllegalArgumentException("Password requeriments are incorrect.");
         }
@@ -45,7 +46,19 @@ public class NurseServiceImpl implements NurseService {
         return nurseRepository.save(nurse);
 	}
 	
+	@Override
+	public Nurse updateProfileChanges(Nurse nurse) {
+		
+	    if (!isValidProfileChanges(nurse)) {
+	        throw new IllegalArgumentException("Invalid profile changes. Username may be already taken or fields are empty.");
+	    }
+	    
+	    return nurseRepository.save(nurse);
+	}
+	
+	// Check the password requirements.
     private boolean isValidPassword(String password) {
+    	
         if (password == null || password.length() < 8) {
             return false;
         }
@@ -60,6 +73,28 @@ public class NurseServiceImpl implements NurseService {
         if (!password.matches(".*[!@#$%^&*()-_+=<>?].*")) {
             return false;
         }
+        return true;
+    }
+    
+    // Check the profile user and name requirements.
+    private boolean isValidProfileChanges(Nurse nurse) {
+    	
+        // Validates that the fields are not empty or null.
+        if (nurse.getUser() == null || nurse.getName() == null || 
+            nurse.getUser().trim().isEmpty() || nurse.getName().trim().isEmpty()) {
+            return false;
+        }
+        
+        // Get the current Nurse ID.
+        Optional<Nurse> currentNurse = nurseRepository.findById(nurse.getId());
+        
+        // Verifies that the username is not in use by another Nurse.
+        if (currentNurse.isPresent() && !currentNurse.get().getUser().equals(nurse.getUser())) {
+        	
+            // Throws exception if the username is unavailable.
+            return checkUserAvailability(nurse.getUser());
+        }
+        
         return true;
     }
 	
