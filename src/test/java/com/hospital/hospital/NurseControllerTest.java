@@ -65,9 +65,9 @@ class NurseControllerTMock {
         Nurse nurse1 = new Nurse("nurse1", "password1");
         Nurse nurse2 = new Nurse("nurse2", "password2");
         List<Nurse> nurseList = Arrays.asList(nurse1, nurse2);
-        when(nurseService.findAll()).thenReturn(nurseList);
+        when(nurseService.findAllNurses()).thenReturn(nurseList);
 
-        ResponseEntity<List<Nurse>> response = nurseController.getAll();
+        ResponseEntity<List<Nurse>> response = nurseController.getAllNurses();
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(nurseList, response.getBody());
@@ -78,7 +78,7 @@ class NurseControllerTMock {
         Nurse nurse = new Nurse("nurseName", "password");
         when(nurseService.findByName("nurseName")).thenReturn(Optional.of(nurse));
 
-        ResponseEntity<Nurse> response = nurseController.findByName("nurseName");
+        ResponseEntity<Nurse> response = nurseController.getNurseByName("nurseName");
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(nurse, response.getBody());
@@ -88,7 +88,7 @@ class NurseControllerTMock {
     void testFindByName_NotFound() {
         when(nurseService.findByName("unknownName")).thenReturn(Optional.empty());
 
-        ResponseEntity<Nurse> response = nurseController.findByName("unknownName");
+        ResponseEntity<Nurse> response = nurseController.getNurseByName("unknownName");
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
@@ -96,7 +96,7 @@ class NurseControllerTMock {
     @Test
     void testCreateNurse() {
         Nurse nurse = new Nurse("newNurse", "newPassword");
-        when(nurseService.save(nurse)).thenReturn(nurse);
+        when(nurseService.registerNurse(nurse)).thenReturn(nurse);
 
         ResponseEntity<Nurse> response = nurseController.createNurse(nurse);
 
@@ -108,7 +108,7 @@ class NurseControllerTMock {
     void testCreateNurse_Failure() {
         Nurse nurse = new Nurse("newNurse", "newPassword");
 
-        when(nurseService.save(nurse)).thenThrow(new RuntimeException("Error creating Nurse"));
+        when(nurseService.registerNurse(nurse)).thenThrow(new RuntimeException("Error creating Nurse"));
 
         ResponseEntity<Nurse> response = nurseController.createNurse(nurse);
 
@@ -123,7 +123,7 @@ class NurseControllerTMock {
         Nurse updatedNurse = new Nurse("updatedName", "updatedPassword");
 
         when(nurseService.findById(1)).thenReturn(Optional.of(existingNurse));
-        when(nurseService.save(existingNurse)).thenReturn(existingNurse);
+        when(nurseService.registerNurse(existingNurse)).thenReturn(existingNurse);
 
         ResponseEntity<Nurse> response = nurseController.updateNurse(1, updatedNurse);
 
@@ -147,7 +147,7 @@ class NurseControllerTMock {
         Nurse nurse = new Nurse("nurseName", "nursePassword");
         when(nurseService.findById(1)).thenReturn(Optional.of(nurse));
 
-        ResponseEntity<Nurse> response = nurseController.readNurse(1);
+        ResponseEntity<Nurse> response = nurseController.getNurseById(1);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(nurse, response.getBody());
@@ -157,7 +157,7 @@ class NurseControllerTMock {
     void testReadNurse_NotFound() {
         when(nurseService.findById(1)).thenReturn(Optional.empty());
 
-        ResponseEntity<Nurse> response = nurseController.readNurse(1);
+        ResponseEntity<Nurse> response = nurseController.getNurseById(1);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
