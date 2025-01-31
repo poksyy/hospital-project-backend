@@ -165,7 +165,7 @@ public class NurseController {
 
 	// Handles HTTP GET request at "/nurses/{id}/image" endpoint.
 	// It retrieves a nurse image by ID.
-	@GetMapping("/profile/{id}/image")
+	@GetMapping("/nurses/{id}/image")
 	public ResponseEntity<byte[]> getNurseImage(@PathVariable Integer id) {
 		byte[] image = nurseService.getProfileImage(id);
 
