@@ -39,6 +39,7 @@ public class NurseServiceImpl implements NurseService {
 	@Override
 	public Nurse registerNurse(Nurse nurse) {
 		try {
+
 			if (!nurseValidator.isValidPassword(nurse.getPassword())) {
 				throw new IllegalArgumentException("Password requirements are incorrect.");
 			}
@@ -54,45 +55,72 @@ public class NurseServiceImpl implements NurseService {
 			nurse.setPassword(passwordEncoder.encode(nurse.getPassword()));
 
 			return nurseRepository.save(nurse);
+
 		} catch (IllegalArgumentException e) {
+
 			throw e;
+
 		} catch (Exception e) {
+
 			throw new RuntimeException("Unexpected error: " + e.getMessage(), e);
 		}
+	}
+
+	@Override
+	public Nurse updatePassword(Nurse nurse) {
+		try {
+
+			if (!nurseValidator.isValidPassword(nurse, nurseRepository)) {
+
+				throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+						"Invalid password changes.");
+			}
+			return nurseRepository.save(nurse);
+
+		} catch (IllegalArgumentException e) {
+
+			throw e;
+
+		} catch (Exception e) {
+
+			throw new RuntimeException("Unexpected error: " + e.getMessage(), e);
+		}
+
 	}
 
 	// Used when updating Nurse name and username on ProfileScreen.
 	@Override
 	public Nurse updateNameAndUsername(Nurse nurse) {
-		
+
 		if (!nurseValidator.isValidProfileChanges(nurse, nurseRepository)) {
-			   throw new ResponseStatusException(HttpStatus.BAD_REQUEST, 
-			            "Invalid profile changes. Username may be already taken or fields are empty.");
-		  }
-	    return nurseRepository.save(nurse);
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+					"Invalid profile changes. Username may be already taken or fields are empty.");
+		}
+
+		return nurseRepository.save(nurse);
 	}
 
 	// Default update method for updating Nurses.
 	@Override
-    public Nurse updateNurseInformation(Integer id, Nurse updatedNurse) {
-        Optional<Nurse> existingNurse = nurseRepository.findById(id);
-        
-        if (!existingNurse.isPresent()) {
-            throw new IllegalArgumentException("Nurse not found.");
-        }
+	public Nurse updateNurseInformation(Integer id, Nurse updatedNurse) {
+		Optional<Nurse> existingNurse = nurseRepository.findById(id);
 
-        Nurse nurse = existingNurse.get();
+		if (!existingNurse.isPresent()) {
+			throw new IllegalArgumentException("Nurse not found.");
+		}
 
-        if (!nurseValidator.isValidPassword(updatedNurse.getPassword())) {
-            throw new IllegalArgumentException("Password does not meet the required criteria.");
-        }
+		Nurse nurse = existingNurse.get();
 
-        nurse.setName(updatedNurse.getName());
-        nurse.setUser(updatedNurse.getUser());
-        nurse.setPassword(updatedNurse.getPassword());
+		if (!nurseValidator.isValidPassword(updatedNurse.getPassword())) {
+			throw new IllegalArgumentException("Password does not meet the required criteria.");
+		}
 
-        return nurseRepository.save(nurse);
-    }
+		nurse.setName(updatedNurse.getName());
+		nurse.setUser(updatedNurse.getUser());
+		nurse.setPassword(updatedNurse.getPassword());
+
+		return nurseRepository.save(nurse);
+	}
 
 	@Override
 	public Optional<Nurse> findById(Integer id) {
