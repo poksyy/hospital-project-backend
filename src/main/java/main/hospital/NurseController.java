@@ -1,11 +1,14 @@
 package main.hospital;
 
 import org.springframework.http.MediaType;
+
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,11 +25,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 @RestController
 @RequestMapping("/hospital")
 public class NurseController {
+
 	private final NurseRepository nurseRepository;
 	private final NurseService nurseService;
 
 	@Autowired
 	public NurseController(NurseService nurseService, NurseRepository nurseRepository) {
+
 		this.nurseRepository = nurseRepository;
 		this.nurseService = nurseService;
 	}
@@ -35,11 +40,15 @@ public class NurseController {
 	// It provides a login to the Nurse account.
 	@PostMapping("/login")
 	public ResponseEntity<Nurse> login(@RequestBody Nurse loginRequest) {
+
 		Optional<Nurse> nurse = nurseService.findByUserAndPassword(loginRequest.getUser(), loginRequest.getPassword());
 
 		if (nurse.isPresent()) {
+
 			return ResponseEntity.ok(nurse.get());
+
 		} else {
+
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
 		}
 	}
@@ -48,23 +57,34 @@ public class NurseController {
 	// It creates a new nurse in the database.
 	@PostMapping("/register")
 	public ResponseEntity<Object> createNurse(@RequestBody Nurse nurse) {
-	    try {
-	        nurse.setId(null);
-	        Nurse newRegisteredNurse = nurseService.registerNurse(nurse);
-	        return ResponseEntity.status(HttpStatus.CREATED).body(newRegisteredNurse);
-	    } catch (IllegalArgumentException e) {
-	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
-	    } catch (Exception e) {
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected error: " + e.getMessage());
-	    }
+
+		try {
+
+			nurse.setId(null);
+			Nurse newRegisteredNurse = nurseService.registerNurse(nurse);
+
+			return ResponseEntity.status(HttpStatus.CREATED).body(newRegisteredNurse);
+
+		} catch (IllegalArgumentException e) {
+
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
+
+		} catch (Exception e) {
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected error: " + e.getMessage());
+		}
 	}
 
 	// Handles HTTP GET request at the "/nurses" endpoint.
 	// It retrieves a list of all nurses from the database.
 	@GetMapping("/nurses")
+
 	public ResponseEntity<List<Nurse>> getAllNurses() {
+
 		List<Nurse> nurses = new ArrayList<>();
+
 		nurseService.findAllNurses().forEach(nurses::add);
+
 		return ResponseEntity.ok(nurses);
 	}
 
@@ -72,10 +92,15 @@ public class NurseController {
 	// It retrieves a nurse from the database by their name.
 	@GetMapping("/nurses/{name}/name")
 	public ResponseEntity<Nurse> getNurseByName(@PathVariable String name) {
+
 		Optional<Nurse> nurse = nurseService.findByName(name);
+
 		if (nurse.isPresent()) {
+
 			return ResponseEntity.ok(nurse.get());
+
 		} else {
+
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 	}
@@ -84,54 +109,85 @@ public class NurseController {
 	// It retrieves a nurse by ID.
 	@GetMapping("/nurses/{id}")
 	public ResponseEntity<Nurse> getNurseById(@PathVariable Integer id) {
+
 		Optional<Nurse> nurseAvailable = nurseService.findById(id);
+
 		if (nurseAvailable.isPresent()) {
 			return ResponseEntity.ok(nurseAvailable.get());
+
 		} else {
+
 			return ResponseEntity.notFound().build();
 		}
 	}
 
 	@PutMapping("/nurses/{id}")
 	public ResponseEntity<Object> updateNurse(@PathVariable Integer id, @RequestBody Nurse updatedNurse) {
-	    try {
-	        Nurse updatedNurseData = nurseService.updateNurseInformation(id, updatedNurse);
-	        return ResponseEntity.ok(updatedNurseData);
-	    } catch (IllegalArgumentException e) {
-	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
-	    } catch (Exception e) {
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected error: " + e.getMessage());
-	    }
+
+		try {
+
+			Nurse updatedNurseData = nurseService.updateNurseInformation(id, updatedNurse);
+			return ResponseEntity.ok(updatedNurseData);
+
+		} catch (IllegalArgumentException e) {
+
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
+		} catch (Exception e) {
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected error: " + e.getMessage());
+		}
 	}
 
 	// Handles HTTP POST request at "nurses/{id}/profile" endpoint.
 	// It updates a nurse's information based on provided ID.
 	@PutMapping("/nurses/{id}/profile")
 	public ResponseEntity<Nurse> updateNurseProfile(@PathVariable Integer id, @RequestBody Nurse updatedNurse) {
-		Optional<Nurse> existingNurse = nurseService.findById(id);
-		if (existingNurse.isPresent()) {
-			Nurse nurse = existingNurse.get();
 
-			// Update the fields
-			nurse.setName(updatedNurse.getName());
-			nurse.setUser(updatedNurse.getUser());
+		try {
 
-			// Save the updated nurse to the database
-			Nurse savedNurse = nurseService.updateNameAndUsername(nurse);
-			return ResponseEntity.ok(savedNurse);
-		} else {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+			Optional<Nurse> existingNurse = nurseService.findById(id);
+			if (existingNurse.isPresent()) {
+				Nurse nurse = existingNurse.get();
+
+				// Update the fields
+				nurse.setName(updatedNurse.getName());
+				nurse.setUser(updatedNurse.getUser());
+
+				// Save the updated nurse to the database
+				Nurse savedNurse = nurseService.updateNameAndUsername(nurse);
+				return ResponseEntity.ok(savedNurse);
+
+			} else {
+				
+				// HTTP 404 NOT FOUND
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+			}
+
+		} catch (DataIntegrityViolationException e) {
+
+			// Manage username duplication.
+			if (e.getCause() instanceof SQLIntegrityConstraintViolationException
+					&& e.getMessage().contains("nurse.user")) {
+				return ResponseEntity.status(HttpStatus.CONFLICT).build();
+			}
+
+			// Manage HTTP BadRequest.
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
 	}
+
 
 	// Handles HTTP DELETE request at "/nurses/{id}" endpoint.
 	// It deletes a nurse by ID.
 	@DeleteMapping("/nurses/{id}")
 	public ResponseEntity<String> deleteNurse(@PathVariable Integer id) {
+
 		if (nurseRepository.existsById(id)) {
 			nurseService.deleteById(id);
 			return ResponseEntity.ok("Nurse deleted successfully");
+
 		} else {
+
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nurse not found");
 		}
 	}
@@ -141,8 +197,9 @@ public class NurseController {
 	@PostMapping("/nurses/{id}/upload-image")
 	public ResponseEntity<String> uploadNurseImage(@PathVariable Integer id,
 			@RequestParam("image") MultipartFile imageFile) {
-		
+
 		try {
+
 			byte[] imageBytes = imageFile.getBytes();
 			String contentType = getContentType(imageBytes);
 
@@ -153,12 +210,17 @@ public class NurseController {
 			}
 
 			Nurse updatedNurse = nurseService.saveProfileImage(id, imageBytes);
+
 			if (updatedNurse != null) {
 				return ResponseEntity.ok("Image uploaded successfully.");
+
 			} else {
+
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nurse not found.");
 			}
+
 		} catch (Exception e) {
+
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload image.");
 		}
 	}
@@ -167,6 +229,7 @@ public class NurseController {
 	// It retrieves a nurse image by ID.
 	@GetMapping("/nurses/{id}/image")
 	public ResponseEntity<byte[]> getNurseImage(@PathVariable Integer id) {
+
 		byte[] image = nurseService.getProfileImage(id);
 
 		// Return 404 if image not found
@@ -190,9 +253,10 @@ public class NurseController {
 		// Validation for the PNG format (starts with 0x89 0x50 0x4E 0x47).
 		else if (image[0] == (byte) 0x89 && image[1] == (byte) 0x50 && image[2] == (byte) 0x4E
 				&& image[3] == (byte) 0x47) {
+			
 			return "image/png";
 		}
+		
 		return "application/octet-stream";
 	}
-
 }
