@@ -28,6 +28,9 @@ public interface NurseService {
 	// Updates the Nurse user and name in the database.
 	public Nurse updateNameAndUsername (Nurse nurse);
 	
+	// Updates the Nurse password in the database.
+	public Nurse updatePassword (Nurse nurse);
+	
 	// Retrieves a nurse by their ID.
 	public Optional<Nurse> findById(Integer id);
 
