@@ -21,7 +21,8 @@ public class NurseValidator {
 		}
 		return true;
 	}
-
+	
+	// Used when updating Nurse Name and 
 	public boolean isValidProfileChanges(Nurse nurse, NurseRepository nurseRepository) {
 		if (nurse.getUser() == null || nurse.getName() == null || nurse.getUser().trim().isEmpty()
 				|| nurse.getName().trim().isEmpty()) {
@@ -34,12 +35,14 @@ public class NurseValidator {
 		return true;
 	}
 
+	// Default validation for Nurse update
 	public boolean isValidNurseRegister(Nurse nurse) {
 	    return nurse.getName() != null && !nurse.getName().trim().isEmpty() &&
 	           nurse.getUser() != null && !nurse.getUser().trim().isEmpty() &&
 	           nurse.getPassword() != null && !nurse.getPassword().trim().isEmpty();
 	}
 
+	// Validates if the Username already exists on the database.
 	public boolean isUsernameTaken(String user, NurseRepository nurseRepository) {
 	    return nurseRepository.existsByUser(user);
 	}
