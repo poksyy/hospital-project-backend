@@ -175,7 +175,25 @@ public class NurseController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
 	}
+	
+	// Handles HTTP POST request at "nurses/{id}/password" endpoint.
+	// It updates a nurse's password based on provided ID.
+	@PutMapping("/nurses/{id}/password")
+	public ResponseEntity<Object> updateNursePassword(@PathVariable Integer id, @RequestBody Nurse updatedNurse) {
 
+		try {
+
+			Nurse updatedNurseData = nurseService.updateNurseInformation(id, updatedNurse);
+			return ResponseEntity.ok(updatedNurseData);
+
+		} catch (IllegalArgumentException e) {
+
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
+		} catch (Exception e) {
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected error: " + e.getMessage());
+		}
+	}
 
 	// Handles HTTP DELETE request at "/nurses/{id}" endpoint.
 	// It deletes a nurse by ID.
