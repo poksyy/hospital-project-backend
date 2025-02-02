@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "c92d6ae6-1222-4f47-86ef-8247b0dd4215",
-		"name": "Nurse API Tests Copy 2",
+		"_postman_id": "3bfd3253-abb2-4830-a03b-0cc8d2ad94a7",
+		"name": "Nurse API Tests",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "38870768"
+		"_exporter_id": "38870746"
 	},
 	"item": [
 		{
@@ -13,7 +13,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"user\":\"holahola\",\r\n    \"password\":\"hola123\"\r\n}",
+					"raw": "{\r\n    \"user\":\"pl2024769\",\r\n    \"password\":\"pau1234\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -21,15 +21,44 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/nurse/authentication",
+					"raw": "http://localhost:8080/hospital/login",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"nurse",
-						"authentication"
+						"hospital",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Pau Test\",\r\n    \"user\": \"test1\",\r\n    \"password\": \"Password123@\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/hospital/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"hospital",
+						"register"
 					]
 				}
 			},
@@ -41,15 +70,15 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/nurse/directory",
+					"raw": "http://localhost:8080/hospital/nurses",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"nurse",
-						"directory"
+						"hospital",
+						"nurses"
 					]
 				}
 			},
@@ -61,45 +90,17 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/nurse/search-by-name/Pau",
+					"raw": "http://localhost:8080/hospital/nurses/{nurse-name}/name",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"nurse",
-						"search-by-name",
-						"Pau"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Create Nurse",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"name\": \"Test\",\r\n    \"user\": \"Test\",\r\n    \"password\": \"Test\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/nurse/registration",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"nurse",
-						"registration"
+						"hospital",
+						"nurses",
+						"{nurse-name}",
+						"name"
 					]
 				}
 			},
@@ -111,16 +112,16 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/nurse/profile/1",
+					"raw": "http://localhost:8080/hospital/nurses/{id}",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"nurse",
-						"profile",
-						"1"
+						"hospital",
+						"nurses",
+						"{id}"
 					]
 				}
 			},
@@ -133,7 +134,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"name\": \"updatedName\",\r\n    \"user\": \"updatedUser\",\r\n    \"password\": \"updatedPassword\"\r\n}",
+					"raw": "{\r\n    \"name\": \"Pat Carrera\",\r\n    \"user\": \"pcarrera\",\r\n    \"password\": \"Password123.\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -141,16 +142,16 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/nurse/modification/2",
+					"raw": "http://localhost:8080/hospital/nurses/{id}",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"nurse",
-						"modification",
-						"2"
+						"hospital",
+						"nurses",
+						"{id}"
 					]
 				}
 			},
@@ -162,16 +163,16 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/nurse/deletion/9",
+					"raw": "http://localhost:8080/hospital/nurses/{id}",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"nurse",
-						"deletion",
-						"9"
+						"hospital",
+						"nurses",
+						"{id}"
 					]
 				}
 			},
@@ -192,23 +193,23 @@
 					"mode": "formdata",
 					"formdata": [
 						{
-							"key": "image\n\n",
+							"key": "image\n",
 							"type": "file",
-							"src": "postman-cloud:///1efd33f0-5913-4ee0-965e-63bbf9695a5e"
+							"src": "postman-cloud:///1efd807e-ad36-4d30-a68d-4d254618b040"
 						}
 					]
 				},
 				"url": {
-					"raw": "http://localhost:8080/nurse/profile/1/upload-image",
+					"raw": "http://localhost:8080/hospital/nurses/{id}/upload-image",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"nurse",
-						"profile",
-						"1",
+						"hospital",
+						"nurses",
+						"{id}",
 						"upload-image"
 					]
 				}
@@ -221,17 +222,43 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/nurse/profile/1/image",
+					"raw": "http://localhost:8080/hospital/profile/{id}/image",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"nurse",
+						"hospital",
 						"profile",
-						"1",
+						"{id}",
 						"image"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check User Availability",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/hospital/checkUserAvailability?user={user}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"hospital",
+						"checkUserAvailability"
+					],
+					"query": [
+						{
+							"key": "user",
+							"value": "{user}"
+						}
 					]
 				}
 			},
