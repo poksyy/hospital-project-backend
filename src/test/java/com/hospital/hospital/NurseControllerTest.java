@@ -98,7 +98,7 @@ class NurseControllerTMock {
         Nurse nurse = new Nurse("newNurse", "newPassword");
         when(nurseService.registerNurse(nurse)).thenReturn(nurse);
 
-        ResponseEntity<Object> response = nurseController.createNurse(nurse);
+        ResponseEntity<Nurse> response = nurseController.createNurse(nurse);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(nurse, response.getBody());
@@ -110,7 +110,7 @@ class NurseControllerTMock {
 
         when(nurseService.registerNurse(nurse)).thenThrow(new RuntimeException("Error creating Nurse"));
 
-        ResponseEntity<Object> response = nurseController.createNurse(nurse);
+        ResponseEntity<Nurse> response = nurseController.createNurse(nurse);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertNull(response.getBody());

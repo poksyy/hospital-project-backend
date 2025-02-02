@@ -56,24 +56,20 @@ public class NurseController {
 	// Handles HTTP POST request at "/register" endpoint.
 	// It creates a new nurse in the database.
 	@PostMapping("/register")
-	public ResponseEntity<Object> createNurse(@RequestBody Nurse nurse) {
+	public ResponseEntity<Nurse> createNurse(@RequestBody Nurse nurse) {
+	    try {
+	        if (nurse.getUser() == null || nurse.getUser().isEmpty() || nurse.getPassword() == null || nurse.getPassword().isEmpty()) {
+	            throw new IllegalArgumentException("Fields cannot be empty");
+	        }
 
-		try {
-
-			nurse.setId(null);
-			Nurse newRegisteredNurse = nurseService.registerNurse(nurse);
-
-			return ResponseEntity.status(HttpStatus.CREATED).body(newRegisteredNurse);
-
-		} catch (IllegalArgumentException e) {
-
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
-
-		} catch (Exception e) {
-
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected error: " + e.getMessage());
-		}
+	        nurse.setId(null);
+	        Nurse newRegisteredNurse = nurseService.registerNurse(nurse);
+	        return ResponseEntity.status(HttpStatus.CREATED).body(newRegisteredNurse);
+	    } catch (Exception e) {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	    }
 	}
+
 
 	// Handles HTTP GET request at the "/nurses" endpoint.
 	// It retrieves a list of all nurses from the database.
@@ -276,5 +272,11 @@ public class NurseController {
 		}
 		
 		return "application/octet-stream";
+	}
+	
+	// Method to check username availability
+	@GetMapping("/checkUserAvailability")
+	public boolean checkUserAvailability(@RequestParam String user) {
+		return nurseService.isUserAvailable(user);
 	}
 }
