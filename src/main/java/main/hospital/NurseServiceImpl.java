@@ -23,7 +23,15 @@ public class NurseServiceImpl implements NurseService {
 
 	@Override
 	public Optional<Nurse> findByUserAndPassword(String user, String password) {
-		return nurseRepository.findByUserAndPassword(user, password);
+	    Optional<Nurse> nurse = nurseRepository.findByUser(user);
+
+	    if (nurse.isPresent()) {
+	        if (passwordEncoder.matches(password, nurse.get().getPassword())) {
+	            return nurse;
+	        }
+	    }
+
+	    return Optional.empty();
 	}
 
 	@Override
@@ -68,6 +76,7 @@ public class NurseServiceImpl implements NurseService {
 				throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
 						"Invalid password changes.");
 			}
+
 			return nurseRepository.save(nurse);
 
 		} catch (IllegalArgumentException e) {
@@ -110,7 +119,7 @@ public class NurseServiceImpl implements NurseService {
 
 		nurse.setName(updatedNurse.getName());
 		nurse.setUser(updatedNurse.getUser());
-		nurse.setPassword(updatedNurse.getPassword());
+		nurse.setPassword(passwordEncoder.encode(nurse.getPassword()));
 
 		return nurseRepository.save(nurse);
 	}
