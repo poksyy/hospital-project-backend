@@ -43,17 +43,10 @@ public class NurseServiceImpl implements NurseService {
 			if (!nurseValidator.isValidPassword(nurse.getPassword())) {
 				throw new IllegalArgumentException("Password requirements are incorrect.");
 			}
-
 			if (!nurseValidator.isValidNurseRegister(nurse)) {
 				throw new IllegalArgumentException("Fields cannot be empty.");
 			}
-
-			if (nurseValidator.isUsernameTaken(nurse.getUser(), nurseRepository)) {
-				throw new IllegalArgumentException("Username is already taken.");
-			}
-
 			nurse.setPassword(passwordEncoder.encode(nurse.getPassword()));
-
 			return nurseRepository.save(nurse);
 
 		} catch (IllegalArgumentException e) {
@@ -152,5 +145,9 @@ public class NurseServiceImpl implements NurseService {
 	public byte[] getProfileImage(Integer id) {
 		Nurse nurse = nurseRepository.findById(id).orElse(null);
 		return (nurse != null) ? nurse.getProfileImage() : null;
+	}
+	
+	public boolean isUserAvailable(String user) {
+		return nurseValidator.isUserAvailable(user, nurseRepository);
 	}
 }
